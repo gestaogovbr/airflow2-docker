@@ -14,7 +14,7 @@ jobs:
   release:
     runs-on: ubuntu-latest       
     steps:
-      - name: upgrade worker
+      - name: upgrade scheduler
         shell: bash
         run: |
           curl -u "${{ secrets.RANCHER_ACCESS }}:${{ secrets.RANCHER_KEY }}" \
@@ -22,5 +22,5 @@ jobs:
           -H 'Accept: application/json' \
           -H 'Content-Type: application/json' \
           -d '{"inServiceStrategy": {"imageUuid": "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}"}}' \
-          'https://rancher.dev.economia.gov.br/v2-beta/projects/1a656207/services/1s5648/?action=update'         
+          'https://rancher.dev.economia.gov.br/v2-beta/projects/1a656207/services/1s5647/?action=upgrade'       
           
