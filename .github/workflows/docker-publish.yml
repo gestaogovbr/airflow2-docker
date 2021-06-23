@@ -2,8 +2,10 @@ name: Build, publish and release a Docker image
 
 on:
   push:
-    branches: [ main ]
-
+#     branches: [ main ]
+    tags:
+      - '*'
+    
 env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
@@ -46,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: update worker
+      - name: upgrade worker
         uses: sekassel-research/actions-rancher-update@1.1.4
         with:
           rancher_url: https://rancher.dev.economia.gov.br
@@ -57,7 +59,7 @@ jobs:
           service_name: airflow-worker
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}    
           
-      - name: update scheduler
+      - name: upgrade scheduler
         uses: sekassel-research/actions-rancher-update@1.1.4
         with:
           rancher_url: https://rancher.dev.economia.gov.br
@@ -68,7 +70,7 @@ jobs:
           service_name: airflow-scheduler
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}            
     
-      - name: update flower
+      - name: upgrade flower
         uses: sekassel-research/actions-rancher-update@1.1.4
         with:
           rancher_url: https://rancher.dev.economia.gov.br
@@ -79,7 +81,7 @@ jobs:
           service_name: flower
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
 
-      - name: update webserver
+      - name: upgrade webserver
         uses: sekassel-research/actions-rancher-update@1.1.4
         with:
           rancher_url: https://rancher.dev.economia.gov.br
