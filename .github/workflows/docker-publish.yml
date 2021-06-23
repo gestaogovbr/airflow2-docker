@@ -14,13 +14,14 @@ jobs:
   release:
     runs-on: ubuntu-latest       
     steps:
-      - name: upgrade scheduler
-        shell: bash
-        run: |
-          curl -u "${{ secrets.RANCHER_ACCESS }}:${{ secrets.RANCHER_KEY }}" \
-          -X POST \
-          -H 'Accept: application/json' \
-          -H 'Content-Type: application/json' \
-          -d '{"inServiceStrategy": {"launchConfig": {"imageUuid": "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}"}, "secondaryLaunchConfigs":[]}}' \
-          'https://rancher.dev.economia.gov.br/v2-beta/projects/1a656207/services/1s5647/?action=upgrade' 
+      - name: update scheduler
+        uses: sekassel-research/actions-rancher-update@1.1.4
+        with:
+          rancher_url: https://rancher.dev.economia.gov.br
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: 1a656207
+          stack_name: airflow2-hmg
+          service_name: airflow-scheduler
+          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }} 
           
