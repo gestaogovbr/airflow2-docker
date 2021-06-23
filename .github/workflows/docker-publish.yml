@@ -22,5 +22,5 @@ jobs:
           -H 'Accept: application/json' \
           -H 'Content-Type: application/json' \
           -d '{"inServiceStrategy": {"imageUuid": "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}"}}' \
-          'https://rancher.dev.economia.gov.br/v2-beta/projects/1a656207/services/1s5647/?action=upgrade'       
+          'https://rancher.dev.economia.gov.br/v2-beta/projects/1a656207/services/1s5647/?action=update'       
           
