@@ -70,7 +70,7 @@ Já este é o que podemos chamar de "versão *alpha* do FastETL" ou o "celeiro d
 
 A partir do diretório corrente, execute:
 
-```$ git clone http://git.planejamento.gov.br/seges-cginf/airflow_commons.git```
+```$ git clone http://git.economia.gov.br/seges-cginf/airflow_commons.git```
 ### Importe o repositório de DAGs do seu interesse
 
 Atualmente a SEGES possui 3 repositórios onde estão organizadas as DAGs do DETRU, do DELOG e da CGINF e demais unidades:
