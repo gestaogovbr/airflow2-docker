@@ -1,4 +1,4 @@
-FROM apache/airflow:2.1.0
+FROM apache/airflow:2.1.2
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
@@ -66,5 +66,5 @@ RUN apt-get update \
     && cat /psql_odbcini.txt >> /etc/odbcinst.ini
 
 USER airflow
-RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.1.0 \
+RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.1.2 \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi
