@@ -30,7 +30,7 @@ disponível em https://airflow.apache.org/docs/apache-airflow/stable/start/docke
 
 4. Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o comando para gerar a estrutura do banco Postgres local
 
-> ```$ docker-compose -f docker-compose-cginf.yaml up airflow-init```
+> ```$ docker-compose -f docker-compose-cginf.yml up airflow-init```
 
 >> Se o docker build retornar a mensagem ```error checking context: 'can't stat '/home/<user-linux>/.../mnt/pgdata''.```, então executar:
 
