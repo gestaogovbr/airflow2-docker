@@ -21,6 +21,7 @@ ARG PYTHON_DEPS=" \
     google-auth-oauthlib \
     great-expectations==0.13.19 \
     airflow-provider-great-expectations==0.0.2 \
+    unidecode==1.2.0 \
     "
 
 USER root
