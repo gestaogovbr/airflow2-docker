@@ -1,4 +1,4 @@
-FROM apache/airflow:2.1.2
+FROM apache/airflow:2.1.2-python3.9
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
