@@ -98,7 +98,10 @@ FastETL, para assim ser utilizada mais amplamente e melhor evoluída.
 
 A partir do diretório corrente, execute:
 
-```$ git clone http://git.economia.gov.br/seges-cginf/airflow_commons.git```
+```bash
+git clone http://git.economia.gov.br/seges-cginf/airflow_commons.git
+```
+
 ### Importe o repositório de DAGs do seu interesse
 
 Atualmente a SEGES possui 3 repositórios onde estão organizadas as DAGs
