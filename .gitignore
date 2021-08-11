@@ -2,3 +2,4 @@ logs
 mnt
 .env
 dags/__pycache__/*
+.vscode
