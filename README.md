@@ -23,8 +23,8 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    na máquina
 
 ```bash
-$ git clone git@github.com:economiagovbr/airflow2-docker.git
-$ cd airflow2-docker
+git clone git@github.com:economiagovbr/airflow2-docker.git
+cd airflow2-docker
 ```
 
 3. No Linux, os volumes montados no contêiner usam as permissões de
@@ -33,21 +33,21 @@ $ cd airflow2-docker
    permissões de arquivo correspondentes.
 
 ```bash
-$ echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
+echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
 ```
 
 4. Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o
    comando para gerar a estrutura do banco Postgres local
 
 ```bash
-$ docker-compose -f docker-compose-cginf.yml up airflow-init
+docker-compose -f docker-compose-cginf.yml up airflow-init
 ```
 
 > Se o docker build retornar a mensagem `error checking context:
 > 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
 ```bash
-$ sudo chown -R <user-linux> mnt/pgdata
+sudo chown -R <user-linux> mnt/pgdata
 ```
 
 Após a conclusão da inicialização, você deverá ver uma mensagem
@@ -81,10 +81,9 @@ das DAGs, como a **carga incremental** de uma tabela entre BDs ou a
 A partir do diretório corrente, execute:
 
 ```bash
+cd ..
 
-$ cd ..
-
-$ git clone https://github.com/economiagovbr/FastETL.git
+git clone https://github.com/economiagovbr/FastETL.git
 ```
 
 ### Importe o Framework airflow_commons
@@ -114,19 +113,19 @@ do DETRU, do DELOG e da CGINF e demais unidades:
 Para clonar o repositório da **CGINF**, execute:
 
 ```bash
-$ git clone http://git.economia.gov.br/seges-cginf/airflow-dags.git
+git clone http://git.economia.gov.br/seges-cginf/airflow-dags.git
 ```
 
 Para clonar o repositório do **DELOG**, execute:
 
 ```bash
-$ git clone http://git.economia.gov.br/seges/airflow-dags-delog.git
+git clone http://git.economia.gov.br/seges/airflow-dags-delog.git
 ```
 
 Para clonar o repositório do **DETRU**, execute:
 
 ```bash
-$ git clone http://git.economia.gov.br/seges/airflow-dags-detru.git
+git clone http://git.economia.gov.br/seges/airflow-dags-detru.git
 ```
 
 ## Executar o Airflow
@@ -135,25 +134,25 @@ A execução é feita de forma isolada por repositório de DAGs. Acesse o
 repositório do ambiente local:
 
 ```bash
-$ cd airflow2-docker
+cd airflow2-docker
 ```
 
 Para subir o Airflow com as dags da CGINF, execute:
 
 ```bash
-$ docker-compose -f docker-compose-cginf.yml up -d
+docker-compose -f docker-compose-cginf.yml up -d
 ```
 
 Para subir o Airflow com as dags do DELOG, execute:
 
 ```bash
-$ docker-compose -f docker-compose-delog.yml up -d3
+docker-compose -f docker-compose-delog.yml up -d3
 ```
 
 Para subir o Airflow com as dags do DETRU, execute:
 
 ```bash
-$ docker-compose -f docker-compose-detru.yml up -d
+docker-compose -f docker-compose-detru.yml up -d
 ```
 
 
@@ -237,25 +236,25 @@ versão (opcional) na variável PYTHON_DEPS do arquivo
 ## Para desligar o ambiente Airflow
 
 ```bash
-$ docker-compose -f docker-compose-cginf.yml down
+docker-compose -f docker-compose-cginf.yml down
 ```
 
 ou
 
 ```bash
-$ docker-compose -f docker-compose-delog.yml down
+docker-compose -f docker-compose-delog.yml down
 ```
 
 ou
 
 ```bash
-$ docker-compose -f docker-compose-detru.yml down
+docker-compose -f docker-compose-detru.yml down
 ```
 
 ## Para atualizar a imagem docker
 
 ```bash
-$ docker-compose -f docker-compose-cginf.yml build
+docker-compose -f docker-compose-cginf.yml build
 ```
 
 O comando deve ser executado na pasta que contém o arquivo
