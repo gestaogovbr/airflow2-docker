@@ -22,6 +22,9 @@ ARG PYTHON_DEPS=" \
     great-expectations==0.13.19 \
     airflow-provider-great-expectations==0.0.2 \
     unidecode==1.2.0 \
+    odfpy==1.4.1 \
+    Markdown==3.3.4 \
+    openpyxl==3.0.7 \
     "
 
 USER root
