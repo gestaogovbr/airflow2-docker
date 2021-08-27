@@ -35,12 +35,16 @@ RUN apt-get update \
          freetds-dev \
          freetds-bin \
          vim \
+         unzip \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add --no-tty - \
   && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && apt-get update -yqq \
   && ACCEPT_EULA=Y apt-get install -yqq msodbcsql17 \
   && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
   && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf \
+  && curl -O http://acraiz.icpbrasil.gov.br/credenciadas/CertificadosAC-ICP-Brasil/ACcompactado.zip \
+  && unzip ACcompactado.zip -d /usr/local/share/ca-certificates/ \
+  && update-ca-certificates \
   && apt-get autoremove -yqq --purge \
   && apt-get clean \
   && rm -rf \
