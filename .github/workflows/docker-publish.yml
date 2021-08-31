@@ -91,3 +91,27 @@ jobs:
           stack_name: airflow2-hmg
           service_name: airflow-webserver
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
+          
+    steps:
+      - name: upgrade worker-85
+        uses: sekassel-research/actions-rancher-update@1.1.4
+        with:
+          rancher_url: https://rancher.dev.economia.gov.br
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: 1a656207
+          stack_name: airflow2-hmg
+          service_name: airflow-worker-85
+          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}    
+          
+    steps:
+      - name: upgrade worker-bigmemory
+        uses: sekassel-research/actions-rancher-update@1.1.4
+        with:
+          rancher_url: https://rancher.dev.economia.gov.br
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: 1a656207
+          stack_name: airflow2-hmg
+          service_name: airflow-worker-bigmemory
+          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}              
