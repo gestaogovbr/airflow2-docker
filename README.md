@@ -222,7 +222,7 @@ produção, clique no botão **Edit record**:
 
 * Os arquivos de banco ficam persistidos em ```./mnt/pgdata```
 * As dags devem estar em um diretório paralelo a este chamado
-  **airflow-dag**. Ou seja o Airflow está preparado para carregar as
+  **airflow-dags**. Ou seja o Airflow está preparado para carregar as
   dags no diretório ```../airflow-dags```. Se você executou corretamente
   o passo anterior (Clonando o repositório de dags), este diretório já
   está devidamente criado.
