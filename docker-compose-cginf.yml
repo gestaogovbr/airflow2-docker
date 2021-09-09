@@ -56,10 +56,10 @@
         AIRFLOW__WEBSERVER__SECRET_KEY: '42'
         AIRFLOW__WEBSERVER__WORKERS: 1
       volumes:
-        # - ../airflow-dags/dags:/opt/airflow/dags
-        # - ../FastETL:/opt/airflow/plugins/FastETL
-        # - ../airflow_commons:/opt/airflow/plugins/airflow_commons
-        # - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
+        - ../airflow-dags/dags:/opt/airflow/dags
+        - ../FastETL:/opt/airflow/plugins/FastETL
+        - ../airflow_commons:/opt/airflow/plugins/airflow_commons
+        - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
         - /var/run/docker.sock:/var/run/docker.sock
         - /usr/bin/docker:/bin/docker:ro
 
