@@ -36,6 +36,7 @@ RUN apt-get update \
          freetds-bin \
          vim \
          unzip \
+         git \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add --no-tty - \
   && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && apt-get update -yqq \
