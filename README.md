@@ -146,7 +146,7 @@ docker-compose -f docker-compose-cginf.yml up -d
 Para subir o Airflow com as dags do DELOG, execute:
 
 ```bash
-docker-compose -f docker-compose-delog.yml up -d3
+docker-compose -f docker-compose-delog.yml up -d
 ```
 
 Para subir o Airflow com as dags do DETRU, execute:
