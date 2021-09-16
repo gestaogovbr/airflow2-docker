@@ -26,6 +26,7 @@ ARG PYTHON_DEPS=" \
     Markdown==3.3.4 \
     openpyxl==3.0.7 \
     pytest==6.2.5 \
+    ckanapi==4.6 \
     "
 
 USER root
