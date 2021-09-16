@@ -14,7 +14,7 @@ ARG PYTHON_DEPS=" \
     ipdb==0.13.3 \
     py-trello==0.17.1 \
     PyPDF2==1.26.0 \
-    frictionless==4.2.1 \
+    frictionless==4.16.6 \
     SQLAlchemy==1.3.23  \
     google-api-python-client \
     google-auth-httplib2 \
