@@ -98,7 +98,7 @@ FastETL, para assim ser utilizada mais amplamente e melhor evoluída.
 A partir do diretório corrente, execute:
 
 ```bash
-git clone http://git.economia.gov.br/seges-cginf/airflow_commons.git
+git clone https://git.economia.gov.br/seges-cginf/airflow_commons.git
 ```
 
 ### Importe o repositório de DAGs do seu interesse
@@ -113,19 +113,19 @@ do DETRU, do DELOG e da CGINF e demais unidades:
 Para clonar o repositório da **CGINF**, execute:
 
 ```bash
-git clone http://git.economia.gov.br/seges-cginf/airflow-dags.git
+git clone https://git.economia.gov.br/seges-cginf/airflow-dags.git
 ```
 
 Para clonar o repositório do **DELOG**, execute:
 
 ```bash
-git clone http://git.economia.gov.br/seges/airflow-dags-delog.git
+git clone https://git.economia.gov.br/seges/airflow-dags-delog.git
 ```
 
 Para clonar o repositório do **DETRU**, execute:
 
 ```bash
-git clone http://git.economia.gov.br/seges/airflow-dags-detru.git
+git clone https://git.economia.gov.br/seges/airflow-dags-detru.git
 ```
 
 ## Executar o Airflow
