@@ -1,4 +1,4 @@
-FROM apache/airflow:2.1.2-python3.7
+FROM apache/airflow:2.2.1-python3.9
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
@@ -9,7 +9,7 @@ ARG PYTHON_DEPS=" \
     xlrd==1.2.0 \
     pygsheets==2.0.3.1 \
     python-slugify==3.0.3 \
-    lxml==4.5.1 \
+    lxml==4.6.4 \
     beautifulsoup4==4.9.1 \
     ipdb==0.13.3 \
     py-trello==0.17.1 \
@@ -76,10 +76,15 @@ RUN apt-get update \
     && make install \
     && cat /psql_odbcini.txt >> /etc/odbcinst.ini
 
+# Instala certificado `Thawte` intermediário
+RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
+
 USER airflow
-RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.1.2 \
-    && pip install --no-cache-dir --user 'apache-airflow-providers-docker'==2.1.0 \
-    && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
+RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.2.1 \
+    && pip install --no-cache-dir --user 'apache-airflow-providers-docker'==2.2.0
+
+RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && mkdir /opt/airflow/export-data
+
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
-RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.7/site-packages/certifi/cacert.pem
+RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
