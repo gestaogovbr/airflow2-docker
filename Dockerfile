@@ -80,6 +80,7 @@ RUN apt-get update \
 RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
 
 # Ajusta permissão no arquivo sock para permitir leitura do airflow
+RUN touch /var/run/docker.sock
 RUN chmod 777 /var/run/docker.sock
 
 USER airflow
