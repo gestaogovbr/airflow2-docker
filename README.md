@@ -260,6 +260,13 @@ docker-compose -f docker-compose-cginf.yml build
 O comando deve ser executado na pasta que contém o arquivo
 `docker-compose-cginf.yml`.
 
+
+> Se o docker-compose build não executar, fazer o build separado da imagem do airflow2-docker:
+
+```bash
+docker build -t ghcr.io/economiagovbr/airflow2-docker:latest .
+```
+
 Após isso você já pode subir novamente os containers!
 
 ---
