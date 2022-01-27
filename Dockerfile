@@ -27,6 +27,7 @@ ARG PYTHON_DEPS=" \
     openpyxl==3.0.7 \
     pytest==6.2.5 \
     ckanapi==4.6 \
+    sharepy==1.3.0 \
     "
 
 USER root
