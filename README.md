@@ -22,33 +22,33 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    [airflow2-docker](https://github.com/economiagovbr/airflow2-docker)
    na máquina
 
-```bash
-git clone git@github.com:economiagovbr/airflow2-docker.git
-cd airflow2-docker
-```
+   ```bash
+   git clone git@github.com:economiagovbr/airflow2-docker.git
+   cd airflow2-docker
+   ```
 
 3. No Linux, os volumes montados no contêiner usam as permissões de
    usuário / grupo do sistema de arquivos Linux nativo, portanto, você
    deve certificar-se de que o contêiner e o computador host têm
    permissões de arquivo correspondentes.
 
-```bash
-echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
-```
+   ```bash
+   echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
+   ```
 
 4. Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o
    comando para gerar a estrutura do banco Postgres local
 
-```bash
-docker-compose -f docker-compose-cginf.yml up airflow-init
-```
+   ```bash
+   docker-compose -f docker-compose-cginf.yml up airflow-init
+   ```
 
-> Se o docker build retornar a mensagem `error checking context:
-> 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
+   > Se o docker build retornar a mensagem `error checking context:
+   > 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
-```bash
-sudo chown -R <user-linux> mnt/pgdata
-```
+   ```bash
+   sudo chown -R <user-linux> mnt/pgdata
+   ```
 
 Após a conclusão da inicialização, você deverá ver uma mensagem
 como a seguir:
