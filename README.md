@@ -18,6 +18,13 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
 1. Instalar Docker CE [aqui!](https://docs.docker.com/get-docker/)
 
+   Obs.: no Ubuntu 20.04, recomenda-se instalar o docker a partir do
+   gerenciador de pacotes *snap*:
+
+   ```bash
+   snap install docker
+   ```
+
 2. Clonar o repositório
    [airflow2-docker](https://github.com/economiagovbr/airflow2-docker)
    na máquina
