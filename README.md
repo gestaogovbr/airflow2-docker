@@ -18,7 +18,8 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
 1. Instalar Docker CE [aqui!](https://docs.docker.com/get-docker/)
 
-   Obs.: no Ubuntu 20.04, recomenda-se instalar o docker a partir do
+   Obs.: É necessário que o `docker-compose` tenha versão mínima 1.29.
+   No Ubuntu 20.04, recomenda-se instalar o docker a partir do
    gerenciador de pacotes *snap*:
 
    ```bash
