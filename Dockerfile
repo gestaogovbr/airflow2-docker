@@ -28,6 +28,7 @@ ARG PYTHON_DEPS=" \
     pytest==6.2.5 \
     ckanapi==4.6 \
     sharepy==1.3.0 \
+    acryl-datahub[airflow]==0.8.24 \
     "
 
 USER root
