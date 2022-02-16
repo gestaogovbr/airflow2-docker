@@ -44,7 +44,18 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
    ```
 
-4. Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o
+4. Para que funcionem as dags que usam DockerOperator, é necessário
+   configurar um volume no arquivo do yml docker-compose (ex.:
+   `docker-compose-cginf.yml`). Digite
+
+   ```bash
+   which docker
+   ```
+
+   para ver o caminho correto para o Docker e descomente a linha
+   correspondente a esse caminho na seção "volumes".
+
+5. Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o
    comando para gerar a estrutura do banco Postgres local
 
    ```bash
