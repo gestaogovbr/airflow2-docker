@@ -61,6 +61,8 @@
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
         - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
         - /var/run/docker.sock:/var/run/docker.sock
+        # Caso precise usar DockerOperator no ambiente, digite "which docker" e
+        # descomente abaixo a linha correspondente.
         # - /usr/bin/docker:/bin/docker:ro
         # - /snap/bin/docker:/bin/docker:ro
 
