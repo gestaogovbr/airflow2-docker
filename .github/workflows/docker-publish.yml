@@ -42,14 +42,15 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
           
-  release:
+  upgrade:
   
     needs: build-and-push-image
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        service: [worker, scheduler, flower, webserver, worker-ftp-route, worker-dockeroperator]
+        service: [airflow-worker, airflow-scheduler, flower, airflow-webserver,
+          airflow-worker-ftp-route, airflow-worker-dockeroperator]
     
     steps:
       - name: upgrade ${{ matrix.service }}
@@ -60,5 +61,5 @@ jobs:
           rancher_key: ${{ secrets.RANCHER_KEY }}
           project_id: 1a656207
           stack_name: airflow2-hmg
-          service_name: airflow-${{ matrix.service }}
+          service_name: ${{ matrix.service }}
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}    
