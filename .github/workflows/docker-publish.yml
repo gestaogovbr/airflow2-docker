@@ -2,7 +2,7 @@ name: Build, publish and release a Docker image
 
 on:
   push:
-    branches: [ github_actions_build_matrix ]
+    # branches: [ github_actions_build_matrix ]
     tags:
       - '*'
     
