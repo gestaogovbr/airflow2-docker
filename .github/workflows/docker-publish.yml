@@ -2,7 +2,7 @@ name: Build, publish and release a Docker image
 
 on:
   push:
-    # branches: [ github_actions_build_matrix ]
+    branches: [ github_actions_build_matrix ]
     tags:
       - '*'
     
@@ -54,7 +54,7 @@ jobs:
     
     steps:
       - name: upgrade ${{ matrix.service }}
-        uses: sekassel-research/actions-rancher-update@1.1.4
+        uses: economiagovbr/actions-rancher-update@1.1.5
         with:
           rancher_url: https://rancher.dev.economia.gov.br
           rancher_access: ${{ secrets.RANCHER_ACCESS }}
@@ -62,4 +62,6 @@ jobs:
           project_id: 1a656207
           stack_name: airflow2-hmg
           service_name: ${{ matrix.service }}
-          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}    
+          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
+          retry_count: 20
+          retry_delay: 15
