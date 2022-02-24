@@ -42,7 +42,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
           
-  upgrade:
+  rancher-upgrade:
   
     needs: build-and-push-image
     runs-on: ubuntu-latest
