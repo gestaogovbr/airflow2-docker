@@ -15,12 +15,12 @@ ARG PYTHON_DEPS=" \
     py-trello==0.17.1 \
     PyPDF2==1.26.0 \
     frictionless==4.16.6 \
-    SQLAlchemy==1.3.23  \
+    SQLAlchemy==1.3.24  \
     google-api-python-client \
     google-auth-httplib2 \
     google-auth-oauthlib \
-    great-expectations==0.13.19 \
-    airflow-provider-great-expectations==0.0.2 \
+    great-expectations==0.14.11 \
+    airflow-provider-great-expectations==0.1.4 \
     unidecode==1.2.0 \
     odfpy==1.4.1 \
     Markdown==3.3.4 \
@@ -28,7 +28,8 @@ ARG PYTHON_DEPS=" \
     pytest==6.2.5 \
     ckanapi==4.6 \
     sharepy==1.3.0 \
-    acryl-datahub[airflow]==0.8.24 \
+    acryl-datahub[airflow]==0.8.29 \
+    acryl-datahub[great-expectations]==0.8.29 \
     "
 
 USER root
