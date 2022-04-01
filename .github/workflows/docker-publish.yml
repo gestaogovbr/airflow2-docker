@@ -50,7 +50,7 @@ jobs:
     strategy:
       matrix:
         service: [airflow-worker, airflow-scheduler, flower, airflow-webserver,
-          airflow-worker-ftp-route, airflow-worker-dockeroperator]
+          airflow-worker-ftp-route]
     
     steps:
       - name: upgrade ${{ matrix.service }}
