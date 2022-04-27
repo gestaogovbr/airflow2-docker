@@ -1,4 +1,4 @@
-FROM apache/airflow:2.2.1-python3.9
+FROM apache/airflow:2.2.4-python3.9
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
@@ -9,7 +9,7 @@ ARG PYTHON_DEPS=" \
     xlrd==1.2.0 \
     pygsheets==2.0.3.1 \
     python-slugify==3.0.3 \
-    lxml==4.6.4 \
+    lxml==4.6.5 \
     beautifulsoup4==4.9.1 \
     ipdb==0.13.3 \
     py-trello==0.17.1 \
@@ -28,8 +28,9 @@ ARG PYTHON_DEPS=" \
     pytest==6.2.5 \
     ckanapi==4.6 \
     sharepy==1.3.0 \
-    acryl-datahub[airflow]==0.8.29 \
-    acryl-datahub[great-expectations]==0.8.29 \
+    acryl-datahub[airflow]==0.8.33 \
+    acryl-datahub[great-expectations]==0.8.33 \
+    Office365-REST-Python-Client==2.3.11 \
     "
 
 USER root
@@ -85,7 +86,7 @@ RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/cert
 
 USER airflow
 
-RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.2.1 \
+RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.2.4 \
     && pip install --no-cache-dir --user 'apache-airflow-providers-docker'==2.2.0
 
 RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
