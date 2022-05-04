@@ -8,6 +8,7 @@ ARG PYTHON_DEPS=" \
     pyodbc==4.0.30 \
     xlrd==1.2.0 \
     pygsheets==2.0.5 \
+    oauth2client==4.1.3 \
     python-slugify==3.0.3 \
     lxml==4.6.5 \
     beautifulsoup4==4.9.1 \
