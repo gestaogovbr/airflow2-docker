@@ -8,7 +8,6 @@ ARG PYTHON_DEPS=" \
     pyodbc==4.0.30 \
     xlrd==1.2.0 \
     pygsheets==2.0.5 \
-    oauth2client==4.1.3 \
     python-slugify==3.0.3 \
     lxml==4.6.5 \
     beautifulsoup4==4.9.1 \
@@ -29,8 +28,8 @@ ARG PYTHON_DEPS=" \
     pytest==6.2.5 \
     ckanapi==4.6 \
     sharepy==1.3.0 \
-    acryl-datahub[airflow]==0.8.33 \
-    acryl-datahub[great-expectations]==0.8.33 \
+    acryl-datahub[airflow]==0.8.41 \
+    acryl-datahub[great-expectations]==0.8.41 \
     Office365-REST-Python-Client==2.3.11 \
     "
 
