@@ -31,6 +31,7 @@ ARG PYTHON_DEPS=" \
     acryl-datahub[airflow]==0.8.41 \
     acryl-datahub[great-expectations]==0.8.41 \
     Office365-REST-Python-Client==2.3.11 \
+    apache-airflow-providers-common-sql==1.1.0 \
     "
 
 USER root
