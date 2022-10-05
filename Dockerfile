@@ -30,7 +30,7 @@ ARG PYTHON_DEPS=" \
     sharepy==1.3.0 \
     acryl-datahub[airflow]==0.8.41 \
     acryl-datahub[great-expectations]==0.8.41 \
-    Office365-REST-Python-Client==2.3.11 \
+    Office365-REST-Python-Client==2.3.14 \
     apache-airflow-providers-common-sql==1.1.0 \
     "
 
