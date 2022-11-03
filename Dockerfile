@@ -30,8 +30,11 @@ ARG PYTHON_DEPS=" \
     sharepy==1.3.0 \
     acryl-datahub[airflow]==0.8.41 \
     acryl-datahub[great-expectations]==0.8.41 \
+    acryl-datahub[postgres]==0.8.41 \
+    acryl-datahub[sqlalchemy]==0.8.41 \
     Office365-REST-Python-Client==2.3.14 \
     apache-airflow-providers-common-sql==1.1.0 \
+    GeoAlchemy2==0.10.2 \
     "
 
 USER root
