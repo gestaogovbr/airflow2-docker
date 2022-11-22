@@ -16,6 +16,7 @@ ARG PYTHON_DEPS=" \
     PyPDF2==1.26.0 \
     frictionless==4.38.0 \
     SQLAlchemy==1.3.24  \
+    alembic==1.8.1 \
     google-api-python-client \
     google-auth-httplib2 \
     google-auth-oauthlib \
