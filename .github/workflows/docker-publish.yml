@@ -60,7 +60,7 @@ jobs:
           rancher_access: ${{ secrets.RANCHER_ACCESS }}
           rancher_key: ${{ secrets.RANCHER_KEY }}
           project_id: 1a656207
-          stack_name: airflow2-hmg
+          stack_name: airflow25-hmg
           service_name: ${{ matrix.service }}
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
           retry_count: 20
