@@ -1,41 +1,29 @@
-FROM apache/airflow:2.2.4-python3.9
+FROM apache/airflow:2.5.0-python3.9
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
     tqdm==4.60.0 \
     ijson==3.0.4 \
     pysmb==1.2.6 \
-    pyodbc==4.0.30 \
     xlrd==1.2.0 \
     pygsheets==2.0.5 \
-    python-slugify==3.0.3 \
-    lxml==4.6.5 \
-    beautifulsoup4==4.9.1 \
     ipdb==0.13.3 \
     py-trello==0.17.1 \
     PyPDF2==1.26.0 \
     frictionless==4.38.0 \
-    SQLAlchemy==1.3.24  \
-    alembic==1.8.1 \
-    google-api-python-client \
-    google-auth-httplib2 \
-    google-auth-oauthlib \
-    great-expectations==0.14.11 \
-    airflow-provider-great-expectations==0.1.4 \
+    great-expectations==0.15.36 \
     unidecode==1.2.0 \
     odfpy==1.4.1 \
-    Markdown==3.3.4 \
     openpyxl==3.0.7 \
     pytest==6.2.5 \
     ckanapi==4.6 \
     sharepy==1.3.0 \
-    acryl-datahub[airflow]==0.8.41 \
-    acryl-datahub[great-expectations]==0.8.41 \
-    acryl-datahub[postgres]==0.8.41 \
-    acryl-datahub[sqlalchemy]==0.8.41 \
     Office365-REST-Python-Client==2.3.14 \
-    apache-airflow-providers-common-sql==1.1.0 \
     GeoAlchemy2==0.10.2 \
+    acryl-datahub-airflow-plugin==0.9.3.2 \
+    acryl-datahub[great-expectations]==0.9.3.2 \
+    acryl-datahub[postgres]==0.9.3.2 \
+    acryl-datahub[sqlalchemy]==0.9.3.2 \
     "
 
 USER root
@@ -91,8 +79,10 @@ RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/cert
 
 USER airflow
 
-RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]'==2.2.4 \
-    && pip install --no-cache-dir --user 'apache-airflow-providers-docker'==2.2.0
+RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]' \
+    && pip install --no-cache-dir --user 'apache-airflow-providers-docker' \
+    && pip install --no-cache-dir --user 'airflow-provider-great-expectations' \
+    && pip install --no-cache-dir --user 'apache-airflow-providers-common-sql'
 
 RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && mkdir /opt/airflow/export-data

@@ -39,7 +39,8 @@
     version: '3'
     x-airflow-common:
       &airflow-common
-      image: ghcr.io/economiagovbr/airflow2-docker:latest
+      image: ghcr.io/economiagovbr/airflow2-docker:2.5.0
+      # image: apache/airflow:2.5.0-python3.9
       environment:
         &airflow-common-env
         AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -62,7 +63,7 @@
         - ../FastETL:/opt/airflow/plugins/FastETL
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
         - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
-        - /var/run/docker.sock:/var/run/docker.sock
+        # - /var/run/docker.sock:/var/run/docker.sock
         # Caso precise usar DockerOperator no ambiente, digite "which docker" e
         # descomente abaixo a linha correspondente.
         # - /usr/bin/docker:/bin/docker:ro
@@ -105,12 +106,12 @@
         command: scheduler
         restart: always
 
-      airflow-init:
-        <<: *airflow-common
-        command: version
-        environment:
-          <<: *airflow-common-env
-          _AIRFLOW_DB_UPGRADE: 'true'
-          _AIRFLOW_WWW_USER_CREATE: 'true'
-          _AIRFLOW_WWW_USER_USERNAME: airflow
-          _AIRFLOW_WWW_USER_PASSWORD: airflow
+      # airflow-init:
+      #   <<: *airflow-common
+      #   command: version
+      #   environment:
+      #     <<: *airflow-common-env
+      #     _AIRFLOW_DB_UPGRADE: 'true'
+      #     _AIRFLOW_WWW_USER_CREATE: 'true'
+      #     _AIRFLOW_WWW_USER_USERNAME: airflow
+      #     _AIRFLOW_WWW_USER_PASSWORD: airflow
