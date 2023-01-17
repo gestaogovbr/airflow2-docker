@@ -44,27 +44,7 @@
         &airflow-common-env
         AIRFLOW__CORE__EXECUTOR: LocalExecutor
         AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-        AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'true'
         AIRFLOW__CORE__FERNET_KEY: 'Uqv6pwYWJn7xifR3QAkifMTkupos8mkxaQL2Q7Ydsqw='
-        AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-        AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-        AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
-        AIRFLOW__CORE__DEFAULT_TIMEZONE: 'America/Sao_Paulo'
-        AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: 'America/Sao_Paulo'
-        AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: 'false'
-        AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: 'false'
-        AIRFLOW__WEBSERVER__SECRET_KEY: '42'
-        AIRFLOW__WEBSERVER__WORKERS: 1
-      volumes:
-        - ../airflow-dags-detru/dags:/opt/airflow/dags
-        - ../FastETL:/opt/airflow/plugins/FastETL
-        - ../airflow_commons:/opt/airflow/plugins/airflow_commons
-        - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
-        - /var/run/docker.sock:/var/run/docker.sock
-        # Caso precise usar DockerOperator no ambiente, digite "which docker" e
-        # descomente abaixo a linha correspondente.
-        # - /usr/bin/docker:/bin/docker:ro
-        # - /snap/bin/docker:/bin/docker:ro
 
       user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
       depends_on:
@@ -86,19 +66,6 @@
           retries: 5
         restart: always
 
-      airflow-webserver:
+      airflow-upgrade-db:
         <<: *airflow-common
-        command: webserver
-        ports:
-          - 8080:8080
-        healthcheck:
-          test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
-          interval: 10s
-          timeout: 10s
-          retries: 5
-        restart: always
-
-      airflow-scheduler:
-        <<: *airflow-common
-        command: scheduler
-        restart: always
+        command: airflow db upgrade
