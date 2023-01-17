@@ -59,7 +59,7 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    comando para gerar a estrutura do banco Postgres local
 
    ```bash
-   docker-compose -f docker-compose-cginf.yml up airflow-init
+   docker-compose -f docker-compose-db-init.yml up
    ```
 
    > Se o docker build retornar a mensagem `error checking context:
@@ -75,7 +75,7 @@ como a seguir:
 ```
 airflow-init_1       | Upgrades done
 airflow-init_1       | Admin user airflow created
-airflow-init_1       | 2.1.0
+airflow-init_1       | 2.5.0
 start_airflow-init_1 exited with code 0
 ```
 
@@ -286,7 +286,47 @@ O comando deve ser executado na pasta que contém o arquivo
 docker build -t ghcr.io/economiagovbr/airflow2-docker:latest .
 ```
 
+Outra possibilidade é baixar a imagem já pronta a partir do repositório:
+
+```bash
+docker pull ghcr.io/economiagovbr/airflow2-docker:latest
+```
+
 Após isso você já pode subir novamente os containers!
+
+## Para migrar da versão 2.2.4 do Airflow para 2.5.0
+
+Caso você já estiver utilizando o ambiente com Airflow versão 2.2.4 e
+deseje
+[migrar para Airflow 2.5.0](https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading.html),
+faça primeiro a atualização da imagem do container conforme a seção
+anterior.
+
+Já com a imagem atualizada, suba o container, utilize o seguinte comando
+para migrar o banco de dados existente:
+
+```bash
+docker-compose -f docker-compose-db-upgrade.yml up
+```
+
+Ao aparecer a mensagem
+
+```
+airflow-upgrade-db_1  | Upgrades done
+```
+
+significa que a migração foi concluída e você pode fechar o container.
+
+Para concluir, [suba o ambiente novamente](#executar-o-airflow).
+Ao abrir o Airflow (localhost:8080) parecerá o aviso:
+
+> While upgrading the metadatabase, Airflow had to move some bad data in
+> order to apply new constraints. The moved data can be found in the
+> following tables:
+> 
+> (...)
+
+Essas tabelas podem ser apagadas do banco de dados sem problemas.
 
 ---
 **Have fun!**
