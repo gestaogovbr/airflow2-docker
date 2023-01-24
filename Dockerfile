@@ -79,7 +79,7 @@ RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/cert
 
 USER airflow
 
-RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc]' \
+RUN pip install --no-cache-dir --user 'apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc,sentry]' \
     && pip install --no-cache-dir --user 'apache-airflow-providers-docker' \
     && pip install --no-cache-dir --user 'airflow-provider-great-expectations' \
     && pip install --no-cache-dir --user 'apache-airflow-providers-common-sql'
