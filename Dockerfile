@@ -10,7 +10,7 @@ ARG PYTHON_DEPS=" \
     ipdb==0.13.3 \
     py-trello==0.17.1 \
     PyPDF2==1.26.0 \
-    frictionless==4.38.0 \
+    frictionless==5.8.3 \
     great-expectations==0.15.36 \
     unidecode==1.2.0 \
     odfpy==1.4.1 \
