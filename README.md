@@ -66,7 +66,7 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    > 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
    ```bash
-   sudo chown -R <user-linux> mnt/pgdata
+   sudo chown -R $USER mnt/pgdata
    ```
 
 Após a conclusão da inicialização, você deverá ver uma mensagem
