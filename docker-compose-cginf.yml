@@ -57,9 +57,9 @@
         PYTHONPATH: "/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog"
         # AIRFLOW__LINEAGE__BACKEND: 'datahub_provider.lineage.datahub.DatahubLineageBackend'
         # AIRFLOW__LINEAGE__DATAHUB_KWARGS: '{ "datahub_conn_id": "datahub_rest_default", "capture_ownership_info": true, "capture_tags_info": true, "graceful_exceptions": true }'
+        PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog'
       volumes:
-        - /Users/vitor/dev/MP/airflow-dags-test:/opt/airflow/dags
-        # - ../airflow-dags/dags:/opt/airflow/dags
+        - ../airflow-dags/dags:/opt/airflow/dags/airflow-dags
         - ../FastETL:/opt/airflow/plugins/FastETL
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
         - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
