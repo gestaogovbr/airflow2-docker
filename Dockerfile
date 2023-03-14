@@ -59,23 +59,8 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 pt_BR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
-# instala pgodbc 9.3
-COPY script/odbc_config /odbc_config
-COPY config/psql_odbcini.txt /psql_odbcini.txt
-RUN apt-get update \
-    && apt-get install -yqq libpq-dev libssl-dev \
-    && chmod 777 /odbc_config \
-    && curl -O https://ftp.postgresql.org/pub/odbc/versions/src/psqlodbc-09.03.0400.tar.gz \
-    && tar -zxvf psqlodbc-09.03.0400.tar.gz \
-    && cd psqlodbc-09.03.0400 \
-    && ./configure --with-unixodbc=/odbc_config \
-    && make \
-    && make install \
-    && cat /psql_odbcini.txt >> /etc/odbcinst.ini
-
 # Instala certificado `Thawte` intermediário
 RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
-
 
 USER airflow
 
