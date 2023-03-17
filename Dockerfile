@@ -24,6 +24,7 @@ ARG PYTHON_DEPS=" \
     acryl-datahub[great-expectations]==0.9.3.2 \
     acryl-datahub[postgres]==0.9.3.2 \
     acryl-datahub[sqlalchemy]==0.9.3.2 \
+    geopandas==0.12.2 \
     "
 
 USER root
