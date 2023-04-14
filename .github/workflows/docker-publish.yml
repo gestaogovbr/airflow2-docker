@@ -51,12 +51,11 @@ jobs:
 
     strategy:
       matrix:
-        service: [airflow-worker, airflow-scheduler, flower, airflow-webserver,
-          airflow-worker-ftp-route]
+        service: [airflow-worker, airflow-scheduler, flower, airflow-webserver]
 
     steps:
       - name: upgrade ${{ matrix.service }}
-        uses: economiagovbr/actions-rancher-update@1.1.5
+        uses: sekassel-research/actions-rancher-update@1.2.0
         with:
           rancher_url: https://rancher.dev.economia.gov.br
           rancher_access: ${{ secrets.RANCHER_ACCESS }}
