@@ -39,7 +39,10 @@
     version: '3'
     x-airflow-common:
       &airflow-common
-      image: ghcr.io/economiagovbr/airflow2-docker:latest
+      build:
+        context: .
+        args:
+          dev_build: "true"
       environment:
         &airflow-common-env
         AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -54,19 +57,13 @@
         AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: 'false'
         AIRFLOW__WEBSERVER__SECRET_KEY: '42'
         AIRFLOW__WEBSERVER__WORKERS: 1
-        # AIRFLOW__LINEAGE__BACKEND: 'datahub_provider.lineage.datahub.DatahubLineageBackend'
-        # AIRFLOW__LINEAGE__DATAHUB_KWARGS: '{ "datahub_conn_id": "datahub_rest_default", "capture_ownership_info": true, "capture_tags_info": true, "graceful_exceptions": true }'
         PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog'
+        FASTETL_DEV: "true"
       volumes:
         - ../airflow-dags/dags:/opt/airflow/dags/airflow-dags
-        - ../FastETL:/opt/airflow/plugins/FastETL
+        - ../FastETL/fastetl:/opt/airflow/plugins/fastetl
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
         - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
-        # - /var/run/docker.sock:/var/run/docker.sock
-        # Caso precise usar DockerOperator no ambiente, digite "which docker" e
-        # descomente abaixo a linha correspondente.
-        # - /usr/bin/docker:/bin/docker:ro
-        # - /snap/bin/docker:/bin/docker:ro
 
       user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
       depends_on:

@@ -69,8 +69,15 @@ RUN pip install --no-cache-dir --user \
     apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc,sentry] \
     apache-airflow-providers-docker \
     airflow-provider-great-expectations \
-    apache-airflow-providers-common-sql \
-    apache-airflow-providers-fastetl
+    apache-airflow-providers-common-sql
+
+ARG dev_build="false"
+RUN \
+  if [[ "${dev_build}" == "false" ]] ; \
+  then pip install --no-cache-dir --user apache-airflow-providers-fastetl; \
+  else \
+  echo ***apache-airflow-providers-fastetl not installed*** ; \
+  fi
 
 RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && mkdir /opt/airflow/export-data
