@@ -5,7 +5,9 @@ on:
     # branches: [ github_actions_build_matrix ]
     tags:
       - '*'
-    
+  repository_dispatch:
+      types: [update-dependencies]
+
 env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
@@ -41,9 +43,9 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_LABEL }}
-          
+
   rancher-upgrade:
-  
+
     needs: build-and-push-image
     runs-on: ubuntu-latest
 
@@ -51,7 +53,7 @@ jobs:
       matrix:
         service: [airflow-worker, airflow-scheduler, flower, airflow-webserver,
           airflow-worker-ftp-route]
-    
+
     steps:
       - name: upgrade ${{ matrix.service }}
         uses: economiagovbr/actions-rancher-update@1.1.5
