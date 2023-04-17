@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: upgrade ${{ matrix.service }}
-        uses: sekassel-research/actions-rancher-update@1.2.0
+        uses: sekassel-research/actions-rancher-update@v1.2.0
         with:
           rancher_url: https://rancher.dev.economia.gov.br
           rancher_access: ${{ secrets.RANCHER_ACCESS }}
