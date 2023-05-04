@@ -69,7 +69,8 @@ RUN pip install --no-cache-dir --user \
     apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc,sentry] \
     apache-airflow-providers-docker \
     airflow-provider-great-expectations \
-    apache-airflow-providers-common-sql
+    apache-airflow-providers-common-sql \
+    apache-airflow-providers-telegram
 
 ARG dev_build="false"
 RUN \
