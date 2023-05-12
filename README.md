@@ -27,11 +27,11 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
    ```
 
 2. Clonar o repositório
-   [airflow2-docker](https://github.com/economiagovbr/airflow2-docker)
+   [airflow2-docker](https://github.com/gestaogovbr/airflow2-docker)
    na máquina
 
    ```bash
-   git clone git@github.com:economiagovbr/airflow2-docker.git
+   git clone git@github.com:gestaogovbr/airflow2-docker.git
    cd airflow2-docker
    ```
 
@@ -102,7 +102,7 @@ A partir do diretório corrente, execute:
 ```bash
 cd ..
 
-git clone https://github.com/economiagovbr/FastETL.git
+git clone https://github.com/gestaogovbr/FastETL.git
 ```
 
 ### Importe o Framework airflow_commons
@@ -250,7 +250,7 @@ produção, clique no botão **Edit record**:
 
 Novas bibliotecas python podem ser instaladas adicionando o nome e
 versão (opcional) na variável PYTHON_DEPS do arquivo
-[Dockerfile](https://github.com/economiagovbr/airflow2-docker/blob/main/Dockerfile).
+[Dockerfile](https://github.com/gestaogovbr/airflow2-docker/blob/main/Dockerfile).
 
 ## Para desligar o ambiente Airflow
 
@@ -283,13 +283,13 @@ O comando deve ser executado na pasta que contém o arquivo
 > Se o docker-compose build não executar, fazer o build separado da imagem do airflow2-docker:
 
 ```bash
-docker build -t ghcr.io/economiagovbr/airflow2-docker:latest .
+docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest .
 ```
 
 Outra possibilidade é baixar a imagem já pronta a partir do repositório:
 
 ```bash
-docker pull ghcr.io/economiagovbr/airflow2-docker:latest
+docker pull ghcr.io/gestaogovbr/airflow2-docker:latest
 ```
 
 Após isso você já pode subir novamente os containers!
