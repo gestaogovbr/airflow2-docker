@@ -1,4 +1,4 @@
-FROM apache/airflow:2.6.1-python3.9
+FROM apache/airflow:2.6.1-python3.10
 
 ARG PYTHON_DEPS=" \
     ctds==1.12.0 \
@@ -25,7 +25,6 @@ ARG PYTHON_DEPS=" \
     acryl-datahub[postgres]==0.9.3.2 \
     acryl-datahub[sqlalchemy]==0.9.3.2 \
     geopandas==0.12.2 \
-    selenium==4.9.1 \
     "
 
 USER root
@@ -33,6 +32,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
          build-essential \
          unixodbc-dev \
+         libpq-dev \
          freetds-dev \
          freetds-bin \
          vim \
@@ -62,7 +62,7 @@ RUN apt-get update \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Instala certificado `Thawte` intermediário
-RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
+RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
 
 USER airflow
 
@@ -85,4 +85,4 @@ RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && mkdir /opt/airflow/export-data
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
-RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
+RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
