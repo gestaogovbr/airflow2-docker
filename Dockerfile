@@ -62,7 +62,7 @@ RUN apt-get update \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Instala certificado `Thawte` intermediário
-RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
+RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
 
 USER airflow
 
@@ -85,4 +85,4 @@ RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && mkdir /opt/airflow/export-data
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
-RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
+RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.9/site-packages/certifi/cacert.pem
