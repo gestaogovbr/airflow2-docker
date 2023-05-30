@@ -294,11 +294,11 @@ docker pull ghcr.io/gestaogovbr/airflow2-docker:latest
 
 Após isso você já pode subir novamente os containers!
 
-## Para migrar da versão 2.2.4 do Airflow para 2.5.0
+## Para fazer upgrade de versão do Airflow
 
-Caso você já estiver utilizando o ambiente com Airflow versão 2.2.4 e
+Caso você já estiver utilizando o ambiente com Airflow versão antiga e
 deseje
-[migrar para Airflow 2.5.0](https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading.html),
+[migrar para a versão atual](https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading.html),
 faça primeiro a atualização da imagem do container conforme a seção
 anterior.
 
