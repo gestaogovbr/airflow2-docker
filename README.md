@@ -286,7 +286,9 @@ O comando deve ser executado na pasta que contém o arquivo
 docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest .
 ```
 
-Outra possibilidade é baixar a imagem já pronta a partir do repositório:
+Outra possibilidade é baixar a imagem já pronta a partir do repositório.
+Porém, nesse caso, não será possível editar o código de plugins, como o
+FastETL. Caso pretenda desenvolver plugins, use o comando `build` acima.
 
 ```bash
 docker pull ghcr.io/gestaogovbr/airflow2-docker:latest
@@ -300,7 +302,8 @@ Caso você já estiver utilizando o ambiente com Airflow versão antiga e
 deseje
 [migrar para a versão atual](https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading.html),
 faça primeiro a atualização da imagem do container conforme a seção
-anterior.
+anterior, usando o mesmo comando que tiver sido usado quando da
+instalação do Airflow (`docker build` ou `docker pull`).
 
 Já com a imagem atualizada, suba o container, utilize o seguinte comando
 para migrar o banco de dados existente:
