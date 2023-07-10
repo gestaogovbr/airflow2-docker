@@ -63,7 +63,7 @@
         - ../airflow-dags/dags:/opt/airflow/dags/airflow-dags
         - ../FastETL/fastetl:/opt/airflow/plugins/fastetl
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
-        - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
+        - ../airflow-great-expectations:/opt/airflow/include/great_expectations
 
       user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
       depends_on:
@@ -101,3 +101,9 @@
         <<: *airflow-common
         command: scheduler
         restart: always
+
+      jupyter:
+        <<: *airflow-common
+        command: bash -c "jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations --NotebookApp.token=''"
+        ports:
+          - 8888:8888
