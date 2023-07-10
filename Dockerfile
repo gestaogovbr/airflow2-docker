@@ -11,7 +11,7 @@ ARG PYTHON_DEPS=" \
     py-trello==0.17.1 \
     PyPDF2==1.26.0 \
     frictionless==5.11.1 \
-    great-expectations==0.15.36 \
+    great-expectations==0.17.2 \
     unidecode==1.2.0 \
     odfpy==1.4.1 \
     openpyxl==3.0.7 \
@@ -66,10 +66,14 @@ RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/cert
 
 USER airflow
 
+RUN if [ -n "${PYTHON_DEPS}" ]; \
+      then pip install --no-cache-dir --user ${PYTHON_DEPS}; \
+    fi \
+    && mkdir /opt/airflow/export-data
+
 RUN pip install --no-cache-dir --user \
     apache-airflow[jdbc,microsoft.mssql,samba,google_auth,odbc,sentry] \
     apache-airflow-providers-docker \
-    airflow-provider-great-expectations \
     apache-airflow-providers-common-sql \
     apache-airflow-providers-telegram
 
@@ -80,9 +84,6 @@ RUN \
   else \
   echo ***apache-airflow-providers-fastetl not installed*** ; \
   fi
-
-RUN if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
-    && mkdir /opt/airflow/export-data
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
 RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
