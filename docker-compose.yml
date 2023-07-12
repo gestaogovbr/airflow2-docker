@@ -67,7 +67,7 @@
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
         - ../airflow-great-expectations:/opt/airflow/include/great_expectations
 
-      user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+      user: "50000:0"
       depends_on:
         postgres:
           condition: service_healthy
