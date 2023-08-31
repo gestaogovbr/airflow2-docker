@@ -58,6 +58,7 @@
         AIRFLOW__WEBSERVER__SECRET_KEY: '42'
         AIRFLOW__WEBSERVER__WORKERS: 1
         PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog'
+        RO_DOU__DAG_CONF_DIR: /opt/airflow/dags/airflow-dags/ro_dou/dag_confs
         FASTETL_DEV: "true"
       volumes:
         - ../airflow-dags/dags:/opt/airflow/dags/airflow-dags
@@ -65,6 +66,7 @@
         - ../airflow-dags-detru/dags:/opt/airflow/dags/airflow-dags-detru
         - ../FastETL/fastetl:/opt/airflow/plugins/fastetl
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
+        - ../Ro-dou/src:/opt/airflow/dags/ro_dou_src
         - ../airflow-great-expectations:/opt/airflow/include/great_expectations
 
       user: "50000:0"
