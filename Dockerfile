@@ -20,10 +20,7 @@ ARG PYTHON_DEPS=" \
     sharepy==1.3.0 \
     Office365-REST-Python-Client==2.3.14 \
     GeoAlchemy2==0.10.2 \
-    acryl-datahub-airflow-plugin==0.9.3.2 \
-    acryl-datahub[great-expectations]==0.9.3.2 \
-    acryl-datahub[postgres]==0.9.3.2 \
-    acryl-datahub[sqlalchemy]==0.9.3.2 \
+    acryl-datahub-airflow-plugin==0.10.4 \
     geopandas==0.12.2 \
     "
 
