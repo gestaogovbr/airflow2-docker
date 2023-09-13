@@ -60,7 +60,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [airflow-worker, airflow-scheduler, flower, airflow-webserver]
+        service: [airflow-worker, airflow-scheduler, flower, airflow-webserver, airflow-dag-processor]
 
     steps:
       - name: upgrade ${{ matrix.service }}
