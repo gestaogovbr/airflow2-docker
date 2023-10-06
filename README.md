@@ -128,6 +128,7 @@ do DETRU, do DELOG e da CGINF e demais unidades:
 * CGINF - https://git.economia.gov.br/seges-cginf/airflow-dags/
 * DELOG - https://git.economia.gov.br/seges/airflow-dags-delog/
 * DETRU - https://git.economia.gov.br/seges/airflow-dags-detru/
+* CGSIS - https://git.economia.gov.br/seges/airflow-dags-pen/
 
 Para clonar o repositório da **CGINF**, execute:
 
@@ -145,6 +146,12 @@ Para clonar o repositório do **DETRU**, execute:
 
 ```bash
 git clone https://git.economia.gov.br/seges/airflow-dags-detru.git
+```
+
+Para clonar o repositório do **CGSIS**, execute:
+
+```bash
+git clone https://git.economia.gov.br/seges/airflow-dags-pen.git
 ```
 
 ## Executar o Airflow
@@ -172,6 +179,12 @@ Para subir o Airflow com as dags do DETRU, execute:
 
 ```bash
 docker-compose -f docker-compose-detru.yml up -d
+```
+
+Para subir o Airflow com as dags do CGSIS, execute:
+
+```bash
+docker-compose -f docker-compose-pen.yml up -d
 ```
 
 
@@ -326,7 +339,7 @@ Ao abrir o Airflow (localhost:8080) parecerá o aviso:
 > While upgrading the metadatabase, Airflow had to move some bad data in
 > order to apply new constraints. The moved data can be found in the
 > following tables:
-> 
+>
 > (...)
 
 Essas tabelas podem ser apagadas do banco de dados sem problemas.
