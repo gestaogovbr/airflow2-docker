@@ -39,38 +39,34 @@
     version: '3'
     x-airflow-common:
       &airflow-common
-      build:
-        context: .
-        args:
-          dev_build: "true"
+      image: ghcr.io/gestaogovbr/airflow2-docker:latest
       environment:
         &airflow-common-env
         AIRFLOW__CORE__EXECUTOR: LocalExecutor
-        AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+        AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
         AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'true'
         AIRFLOW__CORE__FERNET_KEY: 'Uqv6pwYWJn7xifR3QAkifMTkupos8mkxaQL2Q7Ydsqw='
         AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
         AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+        AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
         AIRFLOW__CORE__DEFAULT_TIMEZONE: 'America/Sao_Paulo'
         AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: 'America/Sao_Paulo'
         AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: 'false'
         AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: 'false'
         AIRFLOW__WEBSERVER__SECRET_KEY: '42'
         AIRFLOW__WEBSERVER__WORKERS: 1
-        PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog:/opt/airflow/dags/airflow-dags-pen'
-        RO_DOU__DAG_CONF_DIR: /opt/airflow/dags/airflow-dags/ro_dou/dag_confs
-        FASTETL_DEV: "true"
       volumes:
-        - ../airflow-dags/dags:/opt/airflow/dags/airflow-dags
-        - ../airflow-dags-delog/dags:/opt/airflow/dags/airflow-dags-delog
-        - ../airflow-dags-detru/dags:/opt/airflow/dags/airflow-dags-detru
-        - ../airflow-dags-pen/dags:/opt/airflow/dags/airflow-dags-pen
-        - ../FastETL/fastetl:/opt/airflow/plugins/fastetl
+        - ../airflow-dags-pen/dags:/opt/airflow/dags
+        - ../FastETL:/opt/airflow/plugins/FastETL
         - ../airflow_commons:/opt/airflow/plugins/airflow_commons
-        - ../Ro-dou/src:/opt/airflow/dags/ro_dou_src
-        - ../airflow-great-expectations:/opt/airflow/include/great_expectations
+        - ../airflow-dags/great_expectations:/opt/airflow/great_expectations
+        - /var/run/docker.sock:/var/run/docker.sock
+        # Caso precise usar DockerOperator no ambiente, digite "which docker" e
+        # descomente abaixo a linha correspondente.
+        # - /usr/bin/docker:/bin/docker:ro
+        # - /snap/bin/docker:/bin/docker:ro
 
-      user: "50000:0"
+      user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
       depends_on:
         postgres:
           condition: service_healthy
@@ -106,20 +102,3 @@
         <<: *airflow-common
         command: scheduler
         restart: always
-
-      jupyter:
-        <<: *airflow-common
-        command: bash -c "jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations --NotebookApp.token=''"
-        ports:
-          - 8888:8888
-
-      # nginx:
-      #   image: nginx:alpine
-      #   volumes:
-      #     - ../airflow-great-expectations/uncommitted/data_docs/local_site:/usr/share/nginx/html
-      #   ports:
-      #     - 80:80
-
-      # airflow-db-upgrade:
-      #   <<: *airflow-common
-      #   command: db upgrade
