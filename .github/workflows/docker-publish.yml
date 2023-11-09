@@ -41,6 +41,14 @@ jobs:
         shell: bash
         run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
 
+      - name: Build and push Docker dev image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          build-args: |
+            dev_build=true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
+
       - name: Build and push Docker image latest
         uses: docker/build-push-action@v3
         with:
@@ -53,13 +61,6 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
         if: github.event_name == 'push'
 
-      - name: Build and push Docker dev image
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          build-args: |
-            dev_build=true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
 
   rancher-upgrade:
 
