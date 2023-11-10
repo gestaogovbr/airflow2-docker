@@ -18,7 +18,8 @@ x-airflow-common:
     AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: 'false'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: 'America/Sao_Paulo'
-    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#66b2b2'
+    AIRFLOW__WEBSERVER__INSTANCE_NAME: "Let's Code!"
+    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#82f6ce'
     AIRFLOW__WEBSERVER__SECRET_KEY: '42'
     PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog'
     RO_DOU__DAG_CONF_DIR: /opt/airflow/dags/airflow-dags/ro_dou/dag_confs
