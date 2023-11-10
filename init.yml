@@ -1,5 +1,16 @@
 version: '3'
 
+x-airflow-common:
+  &airflow-common
+  image: ${AIRFLOW_IMAGE_NAME:-ghcr.io/gestaogovbr/airflow2-docker:latest-dev}
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/${POSTGRES_DB:-airflow}
+  volumes:
+    - ./config:/tmp/airflow
+  user: "0:0"
+
 services:
   postgres:
     image: ${POSTGRES_IMAGE_NAME:-postgres:15}
@@ -16,16 +27,28 @@ services:
       start_period: 5s
     restart: always
 
+  airflow-import-connections:
+    <<: *airflow-common
+    command: connections import /tmp/airflow/airflow-connections.json
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-import-variables:
+    <<: *airflow-common
+    command: variables import /tmp/airflow/airflow-variables.json
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
   airflow-init:
-    image: ${AIRFLOW_IMAGE_NAME:-ghcr.io/gestaogovbr/airflow2-docker:latest-dev}
+    <<: *airflow-common
     environment:
-      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/${POSTGRES_DB:-airflow}
+      <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
-    user: "0:0"
     depends_on:
       postgres:
         condition: service_healthy

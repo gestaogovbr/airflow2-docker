@@ -14,53 +14,72 @@ Este repositório foi adaptado a partir da solução oficial da Apache
 Airflow disponível em
 https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
+## Índice
+
+* [1. Preparação e execução do Airflow](#1-preparação-e-execução-do-airflow)
+* [2. Importando Plugins e DAGs](#2-importando-plugins-e-dags)
+* [3. Executando o Airflow](#3-executando-o-airflow)
+* [4. Configurações finais](#4-configurações-finais)
+* [5. Acessos](#5-acessos)
+* [6. Instalação de pacotes, atualizações e upgrades](#6-instalação-de-pacotes-atualizações-e-upgrades)
+
+
 ## 1. Preparação e execução do Airflow
 
 ### 1.1. Instalar Docker CE [aqui!](https://docs.docker.com/get-docker/)
 
-Obs.: É necessário que o `docker-compose` tenha versão mínima 1.29.
-No Ubuntu 20.04, recomenda-se instalar o docker a partir do
+Obs.: É necessário que o `docker-compose` tenha versão mínima `1.29`
+No Ubuntu `20.04`, recomenda-se instalar o docker a partir do
 gerenciador de pacotes *snap*:
 
-```bash
+```shell
 snap install docker
 ```
 
 ### 1.2. Clonar o repositório [airflow2-docker](https://github.com/gestaogovbr/airflow2-docker)
 
-```bash
+```shell
 git clone git@github.com:gestaogovbr/airflow2-docker.git
-cd airflow2-docker
 ```
 
 ### 1.3. Variáveis de configuração do Airflow
 
 Atualizar, se desejar, variáveis de ambiente em [.env](.env).
 
-### 1.4. Inicializar banco Airflow
+### 1.4. Conexões e Variáveis do Airflow
+
+Caso deseje pré-carregar as conexões e variáveis do Airflow no seu ambiente,
+sobrescreva os arquivos [airflow-connections.json](/config/airflow-connections.json)
+e [airflow-variables.json](/config/airflow-variables.json).
+
+### 1.5. Inicializar banco, variáveis e conexões Airflow
 
 Dentro da pasta clonada (na raiz do arquivo Dockerfile), executar o
-comando para gerar a estrutura do banco Postgres local
+comando para gerar a estrutura do banco Postgres local e carregar conexões
+e variáveis do Airflow:
 
-```bash
-docker compose -f init.yml up airflow-init
+```shell
+# de dentro da pasta clonada `airflow2-docker`
+docker compose -f init.yml up
 # espera concluir o processo
-docker compose down --remove-orphans
+# Crtl+C
+docker compose -f init.yml down
 ```
+
+Se tudo funcionar, o output do comando acima deve ser algo semelhante à
+tela a seguir:
+
+![airflow-init](/doc/img/airflow-init.gif)
 
 > Se o docker build retornar a mensagem `error checking context:
 > 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
-```bash
-sudo chown -R $USER mnt/pgdata
+```shell
+sudo chown -R $USER mnt
 ```
 
-Após a conclusão da inicialização, você deverá ver uma mensagem
-como a seguir:
-
-![airflow-init](/doc/img/airflow-init.gif)
-
-A conta criada possui o usuário `airflow` e a senha `airflow`.
+A conta criada possui o usuário `airflow` e a senha `airflow` conforme
+configuração em [.env](.env).
 
 Neste momento já é possível executar o Airflow. Porém ainda é necessário
 clonar mais outros repositórios, tanto os que contém **plugins** do
@@ -128,10 +147,12 @@ git clone https://git.economia.gov.br/seges/airflow-dags-delog.git && \
 git clone https://git.economia.gov.br/seges/airflow-dags-detru.git
 ```
 
-## 3. Executar o Airflow
+## 3. Executando o Airflow
 
-```bash
-cd airflow2-docker && \
+### 3.1. Iniciar serviço
+
+```shell
+# de dentro da pasta clonada `airflow2-docker`
 docker compose up
 ```
 
@@ -150,6 +171,14 @@ lista enorme de erros. São erros indicando que o Airflow não consegue
 encontrar as variáveis e conexões utilizadas na compilação das DAGs.
 Para resolver prossiga com os passos seguintes.
 
+### 3.2. Interromper serviço
+
+```shell
+# de dentro da pasta clonada `airflow2-docker`
+# ou na tela de logs, Ctrl+C e depois
+docker-compose down
+```
+
 ## 4. Configurações finais
 
 O Airflow possui módulos que possibilitam o isolamento de **variáveis**
@@ -159,7 +188,9 @@ conectarem com os inúmeros serviços. As variáveis podem ser copiadas
 facilmente do ambiente de produção, o que não é permitido com as
 conexões, por motivos óbvios.
 
-### 4.1. Exportar variáveis do Airflow Produção e importar no Airflow Local
+### 👉 Etapas 4.1. e 4.2. são opcionais caso não tenha atualizado os arquivos [airflow-connections.json](/config/airflow-connections.json) e [airflow-variables.json](/config/airflow-variables.json) na etapa [1.4. Conexões e Variáveis do Airflow](#14-conexões-e-variáveis-do-airflow)
+
+### 4.1. (Opcional) Exportar variáveis do Airflow Produção e importar no Airflow Local
 
 No Airflow produção acesse a tela de cadastro de variáveis
 ([Admin >> Variables](http://hom.airflow.seges.mp.intra//variable/list/)),
@@ -172,7 +203,7 @@ Em seguida acesse a mesma tela no Airflow instalado localmente
 [(Admin >> Variables)](http://localhost:8080/variable/list/) e utilize a
 opção **Import Variables**.
 
-### 4.2. Criar as conexões no Airflow Local
+### 4.2. (Opcional) Criar as conexões no Airflow Local
 
 Esta etapa é similar à anterior, porém, por motivos de segurança, não é
 possível realizar a exportação e importação das conexões. Dessa forma é
@@ -205,7 +236,14 @@ produção, clique no botão **Edit record**:
 
 ![tela-listagem-conexoes](/doc/img/tela-listagem-conexoes.png)
 
-### 4.3. Volumes
+## 5. Acessos
+
+### 5.1. Serviços
+
+* `Airflow UI` em [http://localhost:8080/](http://localhost:8080/)
+* `Jupyter lab` em [http://localhost:8888/lab](http://localhost:8888/lab)
+
+### 5.2. Volumes
 
 * Os arquivos de banco ficam persistidos em `./mnt/pgdata`
 * Os arquivos de log ficam persistidos em `./mnt/pgdata`
@@ -216,38 +254,35 @@ produção, clique no botão **Edit record**:
   está devidamente criado.
 * Para editar os volumes de `DAGs`, `plugins` e outros edite o [docker-compose.yml](docker-compose.yml#L26)
 
-### 4.4. Instalação de bibliotecas Python e atualização da imagem Docker
+## 6. Instalação de pacotes, atualizações e upgrades
 
-Novas bibliotecas python podem ser instaladas adicionando o nome e
-versão (obrigatório) no arquivo [requirements-cdata-dags.txt](requirements-cdata-dags.txt).
+### 6.1. Instalação de pacotes Python
+
+Novas bibliotecas python podem ser instaladas adicionando o nome e versão
+(obrigatório) no arquivo [requirements-cdata-dags.txt](requirements-cdata-dags.txt).
 
 Para refletir as atualizações feitas em [Dockerfile](Dockerfile) ou
 [requirements-cdata-dags.txt](requirements-cdata-dags.txt) rodar o comando:
 
-```shell
-docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
-```
+Para aplicar as mudanças rodar o comando de atualização da imagem em
+[6.3. Atualização da imagem airflow2-docker](#63-atualização-da-imagem-airflow2-docker).
 
-### 4.5. Para desligar o ambiente Airflow
-
-```bash
-docker-compose down
-```
-
-### 4.6. Para fazer upgrade de versão do Airflow
+### 6.2. Upgrade da versão do Airflow
 
 Atualização na versão do Airflow é realizada alterando a imagem de build
 em [Dockerfile](Dockerfile#L3) conforme `tags` disponíveis em [https://hub.docker.com/r/apache/airflow](https://hub.docker.com/r/apache/airflow).
 
-#### 4.6.1. Atualizar imagem
+Para aplicar as mudanças rodar o comando de atualização da imagem em
+[6.3. Atualização da imagem airflow2-docker](#63-atualização-da-imagem-airflow2-docker).
 
-> A partir da pasta que contém o arquivo [Dockerfile](Dockerfile)
+### 6.3. Atualização da imagem airflow2-docker
 
 ```shell
+# de dentro da pasta clonada `airflow2-docker`
 docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
 ```
 
-#### 4.6.2. Atualizar banco (quando necessário)
+### 6.4. Atualizar banco (quando necessário)
 
 Dependendo da atualização do Airflow, será necessário atualizar os esquemas
 do banco. Para descobrir:
@@ -256,7 +291,7 @@ do banco. Para descobrir:
 docker compose up
 ```
 
-Se der mensagem de erro relacionada ao upgrade do banco, rodar:
+Se der mensagem de erro relacionada a upgrade de banco, rodar:
 
 ```shell
 docker compose -f init.yml up airflow-init

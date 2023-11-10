@@ -1,0 +1,12 @@
+{
+  "conn_demo": {
+    "conn_type": "http",
+    "description": "Demo http connection",
+    "login": "foo",
+    "password": "",
+    "host": "https://foo.com",
+    "port": null,
+    "schema": "",
+    "extra": "{}"
+  }
+}
