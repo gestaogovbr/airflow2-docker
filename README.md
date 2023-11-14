@@ -39,7 +39,7 @@ snap install docker
 ### 1.2. Clonar o repositório [airflow2-docker](https://github.com/gestaogovbr/airflow2-docker)
 
 ```shell
-git clone git@github.com:gestaogovbr/airflow2-docker.git
+git clone https://github.com/gestaogovbr/airflow2-docker.git
 ```
 
 ### 1.3. Variáveis de configuração do Airflow
@@ -246,7 +246,7 @@ produção, clique no botão **Edit record**:
 ### 5.2. Volumes
 
 * Os arquivos de banco ficam persistidos em `./mnt/pgdata`
-* Os arquivos de log ficam persistidos em `./mnt/pgdata`
+* Os arquivos de log ficam persistidos em `./mnt/logs`
 * As dags devem estar em um diretório paralelo a este chamado
   **nome-da-sua-pasta-de-dags**. Ou seja o Airflow está preparado para carregar as
   dags no diretório `../nome-da-sua-pasta-de-dags`. Se você executou corretamente
@@ -260,9 +260,6 @@ produção, clique no botão **Edit record**:
 
 Novas bibliotecas python podem ser instaladas adicionando o nome e versão
 (obrigatório) no arquivo [requirements-cdata-dags.txt](requirements-cdata-dags.txt).
-
-Para refletir as atualizações feitas em [Dockerfile](Dockerfile) ou
-[requirements-cdata-dags.txt](requirements-cdata-dags.txt) rodar o comando:
 
 Para aplicar as mudanças rodar o comando de atualização da imagem em
 [6.3. Atualização da imagem airflow2-docker](#63-atualização-da-imagem-airflow2-docker).
