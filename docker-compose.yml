@@ -88,6 +88,7 @@ services:
 
   jupyter:
     <<: *airflow-common
+    user: "airflow:0"
     command: bash -c "jupyter lab --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations --IdentityProvider.token=''"
     ports:
       - 8888:8888
