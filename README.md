@@ -46,6 +46,13 @@ git clone https://github.com/gestaogovbr/airflow2-docker.git
 
 Atualizar, se desejar, variáveis de ambiente em [.env](.env).
 
+Em especial, verifique se a variável `AIRFLOW_UID` contém o mesmo número
+de usuário que você obtém por meio do comando
+
+```bash
+id -u
+```
+
 ### 1.4. Conexões e Variáveis do Airflow
 
 Caso deseje pré-carregar as conexões e variáveis do Airflow no seu ambiente,
