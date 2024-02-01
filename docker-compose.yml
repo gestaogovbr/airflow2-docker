@@ -41,6 +41,8 @@ x-airflow-common:
     - ../airflow-great-expectations:/opt/airflow/include/great_expectations
     # logs
     - ./mnt/logs:/opt/airflow/logs
+    # analytics-cginf (opcional - descomente abaixo)
+    # - ../analytics-cginf:/opt/airflow/include/great_expectations/notebooks/analytics-cginf
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
