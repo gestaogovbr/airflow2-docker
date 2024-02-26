@@ -6,6 +6,7 @@ from airflow.models import Variable
 from airflow.exceptions import AirflowClusterPolicyViolation
 
 ALLOWED_OWNERS = "team_contacts"
+ALLOWED_TAGS = "airflow_tags_allowed_list"
 
 
 def dag_policy(dag):
@@ -25,6 +26,11 @@ def dag_policy(dag):
         if not dag.dagrun_timeout or dag.dagrun_timeout > timedelta(days=1)
         else dag.dagrun_timeout
     )
+
+    # Set tasks retries max to 3
+    retries = dag.default_args.get("retries", False)
+    if retries and retries > 3:
+        dag.default_args["retries"] = 3
 
     # Check if owner exists
     owner = dag.default_args.get("owner", "")
@@ -49,8 +55,18 @@ def dag_policy(dag):
         )
 
     # Check if dag has tags
-    if not dag.tags:
+    tags = dag.tags
+    if not tags:
         raise AirflowClusterPolicyViolation(
             f"DAG has no tags. At least one tag required."
         )
+
+    # Check if tag is allowed
+    tag_allowed_list = yaml.safe_load(Variable.get(ALLOWED_TAGS))
+    if not all(item in tag_allowed_list for item in tags):
+        raise AirflowClusterPolicyViolation(
+            f"One of tags(s) {tags} not in Airflow Variable {ALLOWED_TAGS}"
+        )
+
+
 # EOF
