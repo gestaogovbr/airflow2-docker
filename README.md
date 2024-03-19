@@ -82,6 +82,7 @@ tela a seguir:
 > 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
 ```shell
+sudo chmod 777 -R mnt
 sudo chown -R $USER mnt
 ```
 
