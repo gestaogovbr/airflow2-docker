@@ -3,7 +3,8 @@ ctds==1.12.0
 tqdm==4.60.0
 py-trello==0.17.1
 frictionless==5.11.1
-great-expectations==0.17.2
+great-expectations==0.18.9
+typing_extensions==4.11.0
 openpyxl==3.0.7
 Office365-REST-Python-Client==2.3.14
 geopandas==0.12.2

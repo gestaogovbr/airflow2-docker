@@ -14,7 +14,7 @@ RUN apt-get update \
          unzip \
          git \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add --no-tty - \
-  && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+  && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && apt-get update -yqq \
   && ACCEPT_EULA=Y apt-get install -yqq msodbcsql17 mssql-tools \
   && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
@@ -47,15 +47,18 @@ COPY requirements-uninstall.txt .
 COPY requirements-cdata-dags.txt .
 
 RUN pip uninstall -y -r requirements-uninstall.txt && \
-    pip install --no-cache-dir --user -r requirements-cdata-dags.txt && \
     pip install --no-cache-dir --user -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
     pip install --no-cache-dir --user \
-    apache-airflow[jdbc,microsoft.mssql,samba,odbc,sentry] \
-    apache-airflow-providers-docker \
-    apache-airflow-providers-common-sql \
-    apache-airflow-providers-telegram \
-    acryl-datahub-airflow-plugin==0.10.4
+    apache-airflow-providers-jdbc==4.1.0 \
+    apache-airflow-providers-microsoft-mssql==3.5.0 \
+    apache-airflow-providers-samba==4.3.0 \
+    apache-airflow-providers-odbc==4.1.0 \
+    apache-airflow-providers-docker==3.8.0 \
+    apache-airflow-providers-common-sql==1.8.0 \
+    apache-airflow-providers-telegram==4.2.0 \
+    acryl-datahub-airflow-plugin==0.10.4 && \
+    pip install --no-cache-dir --user -r requirements-cdata-dags.txt
 
 ARG dev_build="false"
 RUN \
