@@ -127,3 +127,7 @@ google-crc32c
 google-resumable-media
 grpc-google-iam-v1
 pydata-google-auth
+
+# from apache-airflow-providers-hashicorp
+apache-airflow-providers-hashicorp
+hvac

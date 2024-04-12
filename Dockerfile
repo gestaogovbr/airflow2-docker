@@ -1,6 +1,6 @@
 # for dev: docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
 
-FROM apache/airflow:2.7.3-python3.10
+FROM apache/airflow:2.9.0-python3.10
 
 USER root
 RUN apt-get update \
@@ -14,7 +14,7 @@ RUN apt-get update \
          unzip \
          git \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add --no-tty - \
-  && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+  && curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && apt-get update -yqq \
   && ACCEPT_EULA=Y apt-get install -yqq msodbcsql17 mssql-tools \
   && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
@@ -47,26 +47,26 @@ COPY requirements-uninstall.txt .
 COPY requirements-cdata-dags.txt .
 
 RUN pip uninstall -y -r requirements-uninstall.txt && \
-    pip install --no-cache-dir --user -r \
+    pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
-    pip install --no-cache-dir --user \
-    apache-airflow-providers-jdbc==4.1.0 \
-    apache-airflow-providers-microsoft-mssql==3.5.0 \
-    apache-airflow-providers-samba==4.3.0 \
-    apache-airflow-providers-odbc==4.1.0 \
-    apache-airflow-providers-docker==3.8.0 \
-    apache-airflow-providers-common-sql==1.8.0 \
-    apache-airflow-providers-telegram==4.2.0 \
-    acryl-datahub-airflow-plugin==0.10.4 && \
-    pip install --no-cache-dir --user -r requirements-cdata-dags.txt
+    pip install --no-cache-dir \
+    apache-airflow-providers-jdbc==4.2.2 \
+    apache-airflow-providers-microsoft-mssql==3.6.1 \
+    apache-airflow-providers-samba==4.5.0 \
+    apache-airflow-providers-odbc==4.4.1 \
+    apache-airflow-providers-docker==3.9.1 \
+    apache-airflow-providers-common-sql==1.11.1 \
+    apache-airflow-providers-telegram==4.4.0 \
+    acryl-datahub-airflow-plugin==0.13.1.2 && \
+    pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 ARG dev_build="false"
 RUN \
   if [[ "${dev_build}" == "false" ]] ; \
-  then pip install --no-cache-dir --user apache-airflow-providers-fastetl; \
+  then pip install --no-cache-dir apache-airflow-providers-fastetl; \
   else \
   echo ***apache-airflow-providers-fastetl not installed***  && \
-  pip install --no-cache-dir --user -r https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt ; \
+  pip install --no-cache-dir -r https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt ; \
   fi
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
