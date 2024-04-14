@@ -13,12 +13,17 @@ RUN apt-get update \
          vim \
          unzip \
          git \
-  && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add --no-tty - \
-  && curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+  && curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
+  && curl https://packages.microsoft.com/config/debian/12/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
+  && echo "deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list \
   && apt-get update -yqq \
-  && ACCEPT_EULA=Y apt-get install -yqq msodbcsql17 mssql-tools \
-  && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
-  && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf \
+  && ACCEPT_EULA=Y apt-get install -yqq msodbcsql17 \
+  && sed -i '/\[openssl_init\]/a ssl_conf = ssl_configuration' /etc/ssl/openssl.cnf \
+  && echo "[ssl_configuration]" >> /etc/ssl/openssl.cnf \
+  && echo "system_default = tls_system_default" >> /etc/ssl/openssl.cnf \
+  && echo "[tls_system_default]" >> /etc/ssl/openssl.cnf \
+  && echo "MinProtocol = TLSv1" >> /etc/ssl/openssl.cnf \
+  && echo "CipherString = DEFAULT@SECLEVEL=0" >> /etc/ssl/openssl.cnf \
   && curl -O http://acraiz.icpbrasil.gov.br/credenciadas/CertificadosAC-ICP-Brasil/ACcompactado.zip \
   && unzip ACcompactado.zip -d /usr/local/share/ca-certificates/ \
   && update-ca-certificates \
@@ -71,6 +76,5 @@ RUN \
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
 RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
-RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && \
-    source ~/.bashrc
 RUN rm ACcompactado.zip requirements-cdata-dags.txt requirements-uninstall.txt
+
