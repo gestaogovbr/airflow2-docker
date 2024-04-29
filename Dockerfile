@@ -58,8 +58,7 @@ RUN pip uninstall -y -r requirements-uninstall.txt && \
     apache-airflow-providers-odbc==4.5.0 \
     apache-airflow-providers-docker==3.10.0 \
     apache-airflow-providers-common-sql==1.12.0 \
-    apache-airflow-providers-telegram==4.4.0 \
-    acryl-datahub-airflow-plugin[plugin-v2] && \
+    apache-airflow-providers-telegram==4.4.0 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 ARG dev_build="false"
