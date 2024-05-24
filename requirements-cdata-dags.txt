@@ -5,6 +5,7 @@ great-expectations==0.18.9
 openpyxl==3.0.10
 Office365-REST-Python-Client==2.3.14
 geopandas==0.12.2
+openmetadata-ingestion==1.3.4.0
 
 # airflow-dags-delog
 unidecode==1.2.0
