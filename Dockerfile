@@ -1,6 +1,6 @@
 # for dev: docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
 
-FROM apache/airflow:2.9.1-python3.10
+FROM apache/airflow:2.9.3-python3.10
 
 USER root
 RUN apt-get update \
