@@ -1,6 +1,6 @@
 # for dev: docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
 
-FROM apache/airflow:2.9.3-python3.10
+FROM apache/airflow:2.10.0-python3.10
 
 USER root
 RUN apt-get update \
@@ -50,8 +50,9 @@ WORKDIR /opt/airflow
 COPY requirements-uninstall.txt .
 COPY requirements-cdata-dags.txt .
 
-RUN pip uninstall -y -r requirements-uninstall.txt && \
-    pip install --no-cache-dir -r \
+RUN pip uninstall -y -r requirements-uninstall.txt
+
+RUN pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
     pip install --no-cache-dir \
     apache-airflow-providers-microsoft-mssql==3.6.1 \
