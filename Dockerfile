@@ -52,6 +52,15 @@ COPY requirements-cdata-dags.txt .
 
 RUN pip uninstall -y -r requirements-uninstall.txt
 
+ARG dev_build="false"
+RUN \
+  if [[ "${dev_build}" == "false" ]] ; \
+  then pip install --no-cache-dir apache-airflow-providers-fastetl; \
+  else \
+  echo ***apache-airflow-providers-fastetl not installed***  && \
+  pip install --no-cache-dir -r https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt ; \
+  fi
+
 RUN pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
     pip install --no-cache-dir \
@@ -63,14 +72,6 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-telegram==4.4.0 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
-ARG dev_build="false"
-RUN \
-  if [[ "${dev_build}" == "false" ]] ; \
-  then pip install --no-cache-dir apache-airflow-providers-fastetl; \
-  else \
-  echo ***apache-airflow-providers-fastetl not installed***  && \
-  pip install --no-cache-dir -r https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt ; \
-  fi
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
 RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
