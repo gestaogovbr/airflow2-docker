@@ -64,11 +64,11 @@ RUN \
 RUN pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
     pip install --no-cache-dir \
-    apache-airflow-providers-microsoft-mssql==3.6.1 \
-    apache-airflow-providers-samba==4.6.0 \
-    apache-airflow-providers-odbc==4.5.0 \
-    apache-airflow-providers-docker==3.10.0 \
-    apache-airflow-providers-common-sql==1.12.0 \
+    apache-airflow-providers-microsoft-mssql==3.9.0 \
+    apache-airflow-providers-samba==4.8.0 \
+    apache-airflow-providers-odbc==4.7.0 \
+    apache-airflow-providers-docker==3.13.0 \
+    apache-airflow-providers-common-sql==1.16.0 \
     apache-airflow-providers-telegram==4.4.0 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
