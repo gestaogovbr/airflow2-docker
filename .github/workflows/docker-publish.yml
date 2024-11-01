@@ -84,3 +84,18 @@ jobs:
           docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           retry_count: 20
           retry_delay: 15
+
+  trigger-kube-deploys-repo-workflow:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger workflow in repository kube-deploys
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.KUBE_DEPLOYS_PAT }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches \
+            -d '{"event_type": "update_airflow_tag", "client_payload": {"tag": "${{ env.TAG_NAME }}"}}'
