@@ -22,10 +22,6 @@ jobs:
       packages: write
 
     steps:
-      - name: Extract tag name
-        shell: bash
-        run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
