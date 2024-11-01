@@ -26,7 +26,74 @@ jobs:
         shell: bash
         run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
 
-      - name: Trigger workflow in Repository B
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Extract tag name
+        shell: bash
+        run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+
+      - name: Build and push Docker dev image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          build-args: |
+            dev_build=true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
+
+      - name: Build and push Docker image latest
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Push Docker image Tag
+        run: |
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
+        if: github.event_name == 'push'
+
+
+  rancher-upgrade:
+
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: [airflow-worker, airflow-scheduler, airflow-webserver]
+
+    steps:
+      - name: upgrade ${{ matrix.service }}
+        uses: sekassel-research/actions-rancher-update@v1.2.0
+        with:
+          rancher_url: https://rancher.dev.economia.gov.br
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: 1a656207
+          stack_name: airflow2-hmg
+          service_name: ${{ matrix.service }}
+          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          retry_count: 20
+          retry_delay: 15
+
+  trigger-kube-deploys-workflow:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger workflow in repository kube-deploys
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.KUBE_DEPLOYS_PAT }}
@@ -36,66 +103,3 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches \
             -d '{"event_type": "update_airflow_tag", "client_payload": {"tag": "${{ env.TAG_NAME }}"}}'
-
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-
-  #     # Login against a Docker registry except on PR
-  #     # https://github.com/docker/login-action
-  #     - name: Log into registry ${{ env.REGISTRY }}
-  #       if: github.event_name != 'pull_request'
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: ${{ env.REGISTRY }}
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-
-  #     # Build and push Docker image with Buildx (don't push on PR)
-  #     # https://github.com/docker/build-push-action
-  #     - name: Extract tag name
-  #       shell: bash
-  #       run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
-
-  #     - name: Build and push Docker dev image
-  #       uses: docker/build-push-action@v3
-  #       with:
-  #         push: true
-  #         build-args: |
-  #           dev_build=true
-  #         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
-
-  #     - name: Build and push Docker image latest
-  #       uses: docker/build-push-action@v3
-  #       with:
-  #         push: true
-  #         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-  #     - name: Push Docker image Tag
-  #       run: |
-  #         docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
-  #         docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
-  #       if: github.event_name == 'push'
-
-
-  # rancher-upgrade:
-
-  #   needs: build-and-push-image
-  #   runs-on: ubuntu-latest
-
-  #   strategy:
-  #     matrix:
-  #       service: [airflow-worker, airflow-scheduler, airflow-webserver]
-
-  #   steps:
-  #     - name: upgrade ${{ matrix.service }}
-  #       uses: sekassel-research/actions-rancher-update@v1.2.0
-  #       with:
-  #         rancher_url: https://rancher.dev.economia.gov.br
-  #         rancher_access: ${{ secrets.RANCHER_ACCESS }}
-  #         rancher_key: ${{ secrets.RANCHER_KEY }}
-  #         project_id: 1a656207
-  #         stack_name: airflow2-hmg
-  #         service_name: ${{ matrix.service }}
-  #         docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-  #         retry_count: 20
-  #         retry_delay: 15
