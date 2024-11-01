@@ -85,7 +85,7 @@ jobs:
           retry_count: 20
           retry_delay: 15
 
-  trigger-kube-deploys-workflow:
+  trigger-kube-deploys-repo-workflow:
     needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
