@@ -67,9 +67,9 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-microsoft-mssql==4.0.0 \
     apache-airflow-providers-samba==4.9.0 \
     apache-airflow-providers-odbc==4.9.0 \
-    apache-airflow-providers-docker==3.13.0 \
-    apache-airflow-providers-common-sql==4.0.0 \
-    apache-airflow-providers-telegram==4.7.0 && \
+    apache-airflow-providers-docker==4.0.0 \
+    apache-airflow-providers-common-sql==1.21.0 \
+    apache-airflow-providers-telegram==4.7.0 \
     apache-airflow-providers-hashicorp==4.0.0 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
