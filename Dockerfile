@@ -1,6 +1,6 @@
 # for dev: docker build -t ghcr.io/gestaogovbr/airflow2-docker:latest-dev --build-arg dev_build=true .
 
-FROM apache/airflow:2.10.0-python3.10
+FROM apache/airflow:2.10.4-python3.10
 
 USER root
 RUN apt-get update \
@@ -64,12 +64,13 @@ RUN \
 RUN pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \
     pip install --no-cache-dir \
-    apache-airflow-providers-microsoft-mssql==3.9.0 \
-    apache-airflow-providers-samba==4.8.0 \
-    apache-airflow-providers-odbc==4.7.0 \
+    apache-airflow-providers-microsoft-mssql==4.0.0 \
+    apache-airflow-providers-samba==4.9.0 \
+    apache-airflow-providers-odbc==4.9.0 \
     apache-airflow-providers-docker==3.13.0 \
-    apache-airflow-providers-common-sql==1.16.0 \
-    apache-airflow-providers-telegram==4.4.0 && \
+    apache-airflow-providers-common-sql==4.0.0 \
+    apache-airflow-providers-telegram==4.7.0 && \
+    apache-airflow-providers-hashicorp==4.0.0 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 
