@@ -70,8 +70,11 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-docker==4.0.0 \
     apache-airflow-providers-common-sql==1.21.0 \
     apache-airflow-providers-telegram==4.7.0 \
-    apache-airflow-providers-hashicorp==4.0.0 && \
+    apache-airflow-providers-hashicorp==4.0.0 \
+    apache-airflow-providers-microsoft-azure==12.4.1 \
+    apache-airflow-providers-databricks==7.3.2 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
+    
 
 
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
