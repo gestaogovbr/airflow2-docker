@@ -1,7 +1,7 @@
 # airflow-dags
 py-trello==0.17.1
 frictionless==5.11.1
-great-expectations==0.18.9
+great-expectations==1.5.10
 openpyxl==3.0.10
 Office365-REST-Python-Client==2.3.14
 geopandas==0.12.2
