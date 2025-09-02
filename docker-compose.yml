@@ -1,4 +1,4 @@
-version: '3'
+# version: '3'
 
 x-airflow-common:
   &airflow-common
@@ -90,7 +90,7 @@ services:
 
   jupyter:
     <<: *airflow-common
-    user: "airflow:$AIRFLOW_UID"
+    user: "${AIRFLOW_UID:-50000}:0"
     command: bash -c "jupyter lab --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations"
     ports:
       - 8888:8888
