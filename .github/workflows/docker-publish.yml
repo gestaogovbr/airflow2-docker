@@ -60,31 +60,6 @@ jobs:
           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
         if: github.event_name == 'push'
-
-
-  rancher-upgrade:
-
-    needs: build-and-push-image
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        service: [airflow-worker, airflow-scheduler, airflow-webserver]
-
-    steps:
-      - name: upgrade ${{ matrix.service }}
-        uses: sekassel-research/actions-rancher-update@v1.2.0
-        with:
-          rancher_url: https://rancher.dev.economia.gov.br
-          rancher_access: ${{ secrets.RANCHER_ACCESS }}
-          rancher_key: ${{ secrets.RANCHER_KEY }}
-          project_id: 1a656207
-          stack_name: airflow2-hmg
-          service_name: ${{ matrix.service }}
-          docker_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          retry_count: 20
-          retry_delay: 15
-
   trigger-kube-deploys-repo-workflow:
     needs: build-and-push-image
     runs-on: ubuntu-latest
