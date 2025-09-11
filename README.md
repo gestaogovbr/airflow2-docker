@@ -46,18 +46,13 @@ git clone https://github.com/gestaogovbr/airflow2-docker.git
 
 Atualizar, se desejar, variáveis de ambiente em [.env](.env).
 
-Em especial, verifique se a variável `AIRFLOW_UID` contém o mesmo número
-de usuário que você obtém por meio do comando
-
-```bash
-id -u
-```
 
 ### 1.4. Conexões e Variáveis do Airflow
 
 Caso deseje pré-carregar as conexões e variáveis do Airflow no seu ambiente,
 sobrescreva os arquivos [airflow-connections.json](/config/airflow-connections.json)
 e [airflow-variables.json](/config/airflow-variables.json).
+
 
 ### 1.5. Inicializar banco, variáveis e conexões Airflow
 
@@ -187,7 +182,7 @@ Para resolver prossiga com os passos seguintes.
 docker-compose down
 ```
 
-## 4. Configurações finais
+## 4. Configurações finais (opcionais)
 
 O Airflow possui módulos que possibilitam o isolamento de **variáveis**
 e **conexões**, permitindo maior flexibilidade na configuração das DAGs
@@ -196,9 +191,14 @@ conectarem com os inúmeros serviços. As variáveis podem ser copiadas
 facilmente do ambiente de produção, o que não é permitido com as
 conexões, por motivos óbvios.
 
-### 👉 Etapas 4.1. e 4.2. são opcionais caso não tenha atualizado os arquivos [airflow-connections.json](/config/airflow-connections.json) e [airflow-variables.json](/config/airflow-variables.json) na etapa [1.4. Conexões e Variáveis do Airflow](#14-conexões-e-variáveis-do-airflow)
+> [!NOTE]
+> 👉 As etapas 4.1. e 4.2. são opcionais caso não tenha atualizado os
+> arquivos [airflow-connections.json](/config/airflow-connections.json) e
+> [airflow-variables.json](/config/airflow-variables.json) na etapa [1.4.
+> Conexões e Variáveis do Airflow](#14-conexões-e-variáveis-do-airflow)
 
-### 4.1. (Opcional) Exportar variáveis do Airflow Produção e importar no Airflow Local
+
+### 4.1. Exportar variáveis do Airflow Produção e importar no Airflow Local
 
 No Airflow produção acesse a tela de cadastro de variáveis
 ([Admin >> Variables](http://hom.airflow.seges.mp.intra//variable/list/)),
@@ -211,7 +211,8 @@ Em seguida acesse a mesma tela no Airflow instalado localmente
 [(Admin >> Variables)](http://localhost:8080/variable/list/) e utilize a
 opção **Import Variables**.
 
-### 4.2. (Opcional) Criar as conexões no Airflow Local
+
+### 4.2. Criar as conexões no Airflow Local
 
 Esta etapa é similar à anterior, porém, por motivos de segurança, não é
 possível realizar a exportação e importação das conexões. Dessa forma é
@@ -244,6 +245,16 @@ produção, clique no botão **Edit record**:
 
 ![tela-listagem-conexoes](/doc/img/tela-listagem-conexoes.png)
 
+
+### 4.3 Montar pasta(s) de cadernos Jupyter
+
+Para montar uma ou mais pastas de cadernos Jupyter, acrescente o
+respectivo volume no arquivo `docker-compose.yml`, ou descomente a linha
+existente. Verifique também se o grupo do seu usuário local sob a chave
+`group_add` do serviço `jupyter`, para que seja possível ler e gravar os
+cadernos.
+
+
 ## 5. Acessos
 
 ### 5.1. Serviços
@@ -261,6 +272,7 @@ produção, clique no botão **Edit record**:
   o passo [2.3. Importando Repositórios](#23-importando-repositórios), este diretório já
   está devidamente criado.
 * Para editar os volumes de `DAGs`, `plugins` e outros edite o [docker-compose.yml](docker-compose.yml#L26)
+
 
 ## 6. Instalação de pacotes, atualizações e upgrades
 

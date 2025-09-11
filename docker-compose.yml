@@ -91,6 +91,9 @@ services:
   jupyter:
     <<: *airflow-common
     user: "${AIRFLOW_UID:-50000}:0"
+    # adicione o grupo do seu usuário local para poder salvar os cadernos
+    group_add:
+      - 1000
     command: bash -c "jupyter lab --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations"
     ports:
       - 8888:8888
