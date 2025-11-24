@@ -16,13 +16,12 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
 ## Índice
 
-* [1. Preparação e execução do Airflow](#1-preparação-e-execução-do-airflow)
-* [2. Importando Plugins e DAGs](#2-importando-plugins-e-dags)
-* [3. Executando o Airflow](#3-executando-o-airflow)
-* [4. Configurações finais](#4-configurações-finais)
-* [5. Acessos](#5-acessos)
-* [6. Instalação de pacotes, atualizações e upgrades](#6-instalação-de-pacotes-atualizações-e-upgrades)
-
+- [1. Preparação e execução do Airflow](#1-preparação-e-execução-do-airflow)
+- [2. Importando Plugins e DAGs](#2-importando-plugins-e-dags)
+- [3. Executando o Airflow](#3-executando-o-airflow)
+- [4. Configurações finais](#4-configurações-finais)
+- [5. Acessos](#5-acessos)
+- [6. Instalação de pacotes, atualizações e upgrades](#6-instalação-de-pacotes-atualizações-e-upgrades)
 
 ## 1. Preparação e execução do Airflow
 
@@ -30,7 +29,7 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
 Obs.: É necessário que o `docker-compose` tenha versão mínima `1.29`
 No Ubuntu `20.04`, recomenda-se instalar o docker a partir do
-gerenciador de pacotes *snap*:
+gerenciador de pacotes _snap_:
 
 ```shell
 snap install docker
@@ -46,13 +45,11 @@ git clone https://github.com/gestaogovbr/airflow2-docker.git
 
 Atualizar, se desejar, variáveis de ambiente em [.env](.env).
 
-
 ### 1.4. Conexões e Variáveis do Airflow
 
 Caso deseje pré-carregar as conexões e variáveis do Airflow no seu ambiente,
 sobrescreva os arquivos [airflow-connections.json](/config/airflow-connections.json)
 e [airflow-variables.json](/config/airflow-variables.json).
-
 
 ### 1.5. Inicializar banco, variáveis e conexões Airflow
 
@@ -74,7 +71,7 @@ tela a seguir:
 ![airflow-init](/doc/img/airflow-init.gif)
 
 > Se o docker build retornar a mensagem `error checking context:
-> 'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
+'can't stat '/home/<user-linux>/.../mnt/pgdata''.`, então executar:
 
 ```shell
 sudo chmod 777 -R mnt
@@ -104,7 +101,7 @@ das DAGs, como a **carga incremental** de uma tabela entre BDs ou a
 
 #### 2.1.2. 🔗 [airflow_commons](https://git.economia.gov.br/seges-cginf/airflow_commons)
 
-Já este é o que podemos chamar de "versão *alpha* do FastETL" ou o
+Já este é o que podemos chamar de "versão _alpha_ do FastETL" ou o
 "celeiro de novos plugins". Eventualmente você pode identificar um
 código repetido em várias DAGs. Caso aconteça, você deveria refatorar e
 criar um script no **airflow_commons**, e importá-lo nos diversos
@@ -129,9 +126,9 @@ do Airflow.
 Atualmente a SEGES possui 3 repositórios onde estão organizadas as DAGs
 do DETRU, do DELOG e da CGINF e demais unidades:
 
-* CGINF - https://git.economia.gov.br/seges-cginf/airflow-dags/
-* DELOG - https://git.economia.gov.br/seges/airflow-dags-delog/
-* DETRU - https://git.economia.gov.br/seges/airflow-dags-detru/
+- CGINF - https://git.economia.gov.br/seges-cginf/airflow-dags/
+- DELOG - https://git.economia.gov.br/seges/airflow-dags-delog/
+- DETRU - https://git.economia.gov.br/seges/airflow-dags-detru/
 
 ### 2.3. Importando repositórios
 
@@ -197,7 +194,6 @@ conexões, por motivos óbvios.
 > [airflow-variables.json](/config/airflow-variables.json) na etapa [1.4.
 > Conexões e Variáveis do Airflow](#14-conexões-e-variáveis-do-airflow)
 
-
 ### 4.1. Exportar variáveis do Airflow Produção e importar no Airflow Local
 
 No Airflow produção acesse a tela de cadastro de variáveis
@@ -211,14 +207,13 @@ Em seguida acesse a mesma tela no Airflow instalado localmente
 [(Admin >> Variables)](http://localhost:8080/variable/list/) e utilize a
 opção **Import Variables**.
 
-
 ### 4.2. Criar as conexões no Airflow Local
 
 Esta etapa é similar à anterior, porém, por motivos de segurança, não é
 possível realizar a exportação e importação das conexões. Dessa forma é
 necessário criar cada conexão na sua instalação do Airflow local.
 Todavia é possível listar e copiar todos os parâmetros de cada conexão
-com exceção do *password*. Para isso acesse no Airflow produção a tela
+com exceção do _password_. Para isso acesse no Airflow produção a tela
 de cadastro de conexões
 ([Admin >> Connectios](http://airflow.seges.mp.intra/connection/list/)).
 Selecione e copie os parâmetros visíveis das conexões que você precisa
@@ -236,7 +231,7 @@ todos os erros.
 Uma rápida explicação é de que esta conexão chamada `slack` é utilizada
 por praticamente todas as nossas DAGs para envio de notificação em caso
 de falhas. Caso você execute localmente alguma DAG que implementa esta
-configuração, o seu Airflow  não enviará notificações de fato já que a
+configuração, o seu Airflow não enviará notificações de fato já que a
 conexão criada não possui nenhuma propriedade preenchida, com exceção do
 nome.
 
@@ -244,7 +239,6 @@ Para visualizar os parâmetros de uma conexão registrada no Airflow
 produção, clique no botão **Edit record**:
 
 ![tela-listagem-conexoes](/doc/img/tela-listagem-conexoes.png)
-
 
 ### 4.3 Montar pasta(s) de cadernos Jupyter
 
@@ -254,25 +248,23 @@ existente. Verifique também se o grupo do seu usuário local sob a chave
 `group_add` do serviço `jupyter`, para que seja possível ler e gravar os
 cadernos.
 
-
 ## 5. Acessos
 
 ### 5.1. Serviços
 
-* `Airflow UI` em [http://localhost:8080/](http://localhost:8080/)
-* `Jupyter lab` em [http://localhost:8888/lab](http://localhost:8888/lab)
+- `Airflow UI` em [http://localhost:8080/](http://localhost:8080/)
+- `Jupyter lab` em [http://localhost:8888/lab](http://localhost:8888/lab)
 
 ### 5.2. Volumes
 
-* Os arquivos de banco ficam persistidos em `./mnt/pgdata`
-* Os arquivos de log ficam persistidos em `./mnt/logs`
-* As dags devem estar em um diretório paralelo a este chamado
+- Os arquivos de banco ficam persistidos em `./mnt/pgdata`
+- Os arquivos de log ficam persistidos em `./mnt/logs`
+- As dags devem estar em um diretório paralelo a este chamado
   **nome-da-sua-pasta-de-dags**. Ou seja o Airflow está preparado para carregar as
   dags no diretório `../nome-da-sua-pasta-de-dags`. Se você executou corretamente
   o passo [2.3. Importando Repositórios](#23-importando-repositórios), este diretório já
   está devidamente criado.
-* Para editar os volumes de `DAGs`, `plugins` e outros edite o [docker-compose.yml](docker-compose.yml#L26)
-
+- Para editar os volumes de `DAGs`, `plugins` e outros edite o [docker-compose.yml](docker-compose.yml#L26)
 
 ## 6. Instalação de pacotes, atualizações e upgrades
 
@@ -315,4 +307,5 @@ docker compose -f init.yml up airflow-init
 ```
 
 ---
+
 **Have fun!**

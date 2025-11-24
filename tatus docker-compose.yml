@@ -1,0 +1,67 @@
+[1mdiff --git a/docker-compose.yml b/docker-compose.yml[m
+[1mindex 5e7e431..11966fa 100644[m
+[1m--- a/docker-compose.yml[m
+[1m+++ b/docker-compose.yml[m
+[36m@@ -1,31 +1,32 @@[m
+ # version: '3'[m
+ [m
+[31m-x-airflow-common:[m
+[31m-  &airflow-common[m
+[32m+[m[32mx-airflow-common: &airflow-common[m
+   image: ${AIRFLOW_IMAGE_NAME:-ghcr.io/gestaogovbr/airflow2-docker:latest-dev}[m
+[31m-  pull_policy: always[m
+[31m-  environment:[m
+[31m-    &airflow-common-env[m
+[31m-    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'[m
+[31m-    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: '120'[m
+[31m-    AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT: '180'[m
+[31m-    AIRFLOW__CORE__DEFAULT_TIMEZONE: 'America/Sao_Paulo'[m
+[31m-    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'true'[m
+[32m+[m[32m  pull_policy: never[m
+[32m+[m[32m  environment: &airflow-common-env[m
+[32m+[m[32m    AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session"[m
+[32m+[m[32m    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: "120"[m
+[32m+[m[32m    AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT: "180"[m
+[32m+[m[32m    AIRFLOW__CORE__DEFAULT_TIMEZONE: "America/Sao_Paulo"[m
+[32m+[m[32m    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"[m
+     AIRFLOW__CORE__EXECUTOR: LocalExecutor[m
+     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}[m
+[31m-    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'[m
+[32m+[m[32m    AIRFLOW__CORE__LOAD_EXAMPLES: "false"[m
+     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/${POSTGRES_DB:-airflow}[m
+[31m-    AIRFLOW__DATAHUB__ENABLED: 'false'[m
+[31m-    AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: 'false'[m
+[31m-    AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: 'false'[m
+[31m-    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'[m
+[31m-    AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: 'America/Sao_Paulo'[m
+[32m+[m[32m    AIRFLOW__DATAHUB__ENABLED: "false"[m
+[32m+[m[32m    AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_FAILURE: "false"[m
+[32m+[m[32m    AIRFLOW__EMAIL__DEFAULT_EMAIL_ON_RETRY: "false"[m
+[32m+[m[32m    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"[m
+[32m+[m[32m    AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: "America/Sao_Paulo"[m
+     AIRFLOW__WEBSERVER__INSTANCE_NAME: "Let's Code!"[m
+[31m-    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#82f6ce'[m
+[31m-    AIRFLOW__WEBSERVER__SECRET_KEY: '42'[m
+[31m-    PYTHONPATH: '/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog'[m
+[32m+[m[32m    AIRFLOW__WEBSERVER__NAVBAR_COLOR: "#82f6ce"[m
+[32m+[m[32m    AIRFLOW__WEBSERVER__SECRET_KEY: "42"[m
+[32m+[m[32m    PYTHONPATH: "/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog"[m
+     RO_DOU__DAG_CONF_DIR: /opt/airflow/dags/airflow-dags/ro_dou/dag_confs[m
+[31m-    FASTETL_DEV: 'true'[m
+[32m+[m[32m    FASTETL_DEV: "true"[m
+[32m+[m[32m    # Força uso de certificados do sistema (Thawte já está incluído via update-ca-certificates)[m
+[32m+[m[32m    SSL_CERT_FILE: "/etc/ssl/certs/ca-certificates.crt"[m
+[32m+[m[32m    REQUESTS_CA_BUNDLE: "/etc/ssl/certs/ca-certificates.crt"[m
+   volumes:[m
+     # cluster policy config[m
+     - ./config/airflow_local_settings.py:/opt/airflow/config/airflow_local_settings.py[m
+[36m@@ -44,8 +45,7 @@[m [mx-airflow-common:[m
+     # analytics-cginf (opcional - descomente abaixo)[m
+     # - ../analytics-cginf:/opt/airflow/include/great_expectations/notebooks/analytics-cginf[m
+   user: "${AIRFLOW_UID:-50000}:0"[m
+[31m-  depends_on:[m
+[31m-    &airflow-common-depends-on[m
+[32m+[m[32m  depends_on: &airflow-common-depends-on[m
+     postgres:[m
+       condition: service_healthy[m
+ [m

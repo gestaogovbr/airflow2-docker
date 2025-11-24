@@ -8,5 +8,25 @@
     "port": null,
     "schema": "",
     "extra": "{}"
+  },
+  "impala_haproxy": {
+    "conn_type": "generic",
+    "description": "Conexão Impala via HAProxy",
+    "login": "seu_usuario",
+    "password": "sua_senha",
+    "host": "haproxy.example.com",
+    "port": 21050,
+    "schema": "default",
+    "extra": "{\"auth_mechanism\": \"PLAIN\", \"use_ssl\": false, \"timeout\": 45}"
+  },
+  "impala_jdbc": {
+    "conn_type": "jdbc",
+    "description": "Conexão Impala via JDBC (requer driver JDBC instalado)",
+    "login": "seu_usuario",
+    "password": "sua_senha",
+    "host": "acessostageha.serpro.gov.br",
+    "port": 21050,
+    "schema": "default",
+    "extra": "{\"driver_path\": \"/opt/impala/jdbc/ImpalaJDBC42.jar\", \"driver_class\": \"com.cloudera.impala.jdbc.Driver\", \"jdbc_url\": \"jdbc:impala://acessostageha.serpro.gov.br:21050/default;AuthMech=3;SSL=0\"}"
   }
 }

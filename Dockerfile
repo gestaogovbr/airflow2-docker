@@ -12,6 +12,9 @@ RUN apt-get update \
          unzip \
          git \
          telnet \
+         libsasl2-dev \
+         libsasl2-modules-gssapi-mit \
+         openjdk-17-jdk-headless \
   && curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
   && curl https://packages.microsoft.com/config/debian/12/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
   && echo "deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list \
@@ -40,6 +43,22 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 pt_BR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
+# Instala Java 17 e configura variáveis de ambiente para JDBC
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=$PATH:$JAVA_HOME/bin
+
+# Cria diretório para drivers JDBC do Impala
+RUN mkdir -p /opt/impala/jdbc
+
+# Copia driver JDBC do Impala local
+COPY driver/ImpalaJDBC42.jar /opt/impala/jdbc/
+
+# Ajusta permissões (usando UID/GID do usuário airflow - geralmente 50000)
+RUN chown -R 50000:0 /opt/impala || chmod -R 755 /opt/impala
+
+# Configura CLASSPATH para incluir drivers JDBC
+ENV CLASSPATH=/opt/impala/jdbc/*:$CLASSPATH
+
 # Instala certificado `Thawte` intermediário
 RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
 
@@ -59,7 +78,9 @@ RUN \
   then pip install --no-cache-dir apache-airflow-providers-fastetl; \
   else \
   echo ***apache-airflow-providers-fastetl not installed***  && \
-  pip install --no-cache-dir -r https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt ; \
+  (curl -L --retry 5 --retry-delay 2 https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt -o /tmp/fastetl-requirements.txt && \
+   pip install --no-cache-dir -r /tmp/fastetl-requirements.txt) || \
+  echo "Aviso: Não foi possível baixar requirements do FastETL, continuando sem ele..." ; \
   fi
 
 RUN pip install --no-cache-dir -r \
@@ -74,7 +95,15 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-hashicorp==4.0.0 \
     apache-airflow-providers-microsoft-azure==12.4.1 \
     apache-airflow-providers-databricks==7.3.2 \
-    airflow-provider-great-expectations==1.0.0a5 && \
+    airflow-provider-great-expectations==1.0.0a5 \
+    apache-airflow-providers-jdbc \
+    impyla \
+    thrift \
+    thrift-sasl \
+    sasl \
+    bit_array \
+    JayDeBeApi \
+    JPype1 && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 
@@ -82,4 +111,3 @@ RUN pip install --no-cache-dir -r \
 RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
 RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
 RUN rm ACcompactado.zip requirements-cdata-dags.txt requirements-uninstall.txt
-
