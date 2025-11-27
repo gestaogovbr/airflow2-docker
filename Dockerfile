@@ -78,6 +78,7 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-hashicorp==4.0.0 \
     apache-airflow-providers-microsoft-azure==12.4.1 \
     apache-airflow-providers-databricks==7.3.2 \
+    apache-airflow-providers-apache-impala \
     airflow-provider-great-expectations==1.0.0a5 \
     impyla \
     thrift \
