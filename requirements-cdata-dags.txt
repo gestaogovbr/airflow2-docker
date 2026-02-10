@@ -14,6 +14,9 @@ unidecode==1.2.0
 # airflow-dags-detru
 # None
 
+# rodou-dags
+apprise==1.9.7
+
 # airflow-commons
 # great-expectations==0.18.9
 
