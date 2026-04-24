@@ -42,9 +42,6 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 pt_BR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
-# Instala certificado `Thawte` intermediário
-RUN curl https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
-
 USER airflow
 
 WORKDIR /opt/airflow
@@ -87,8 +84,4 @@ RUN pip install --no-cache-dir -r \
     bit_array && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
-
-
-RUN while [[ "$(curl -s -o /tmp/thawte.pem -w ''%{http_code}'' https://ssltools.digicert.com/chainTester/webservice/validatecerts/certificate?certKey=issuer.intermediate.cert.98&fileName=Thawte%20RSA%20CA%202018&fileExtension=txt)" != "200" ]]; do sleep 1; done
-RUN cat /tmp/thawte.pem >> /home/airflow/.local/lib/python3.10/site-packages/certifi/cacert.pem
 RUN rm ACcompactado.zip requirements-cdata-dags.txt requirements-uninstall.txt
