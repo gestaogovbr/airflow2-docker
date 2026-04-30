@@ -14,6 +14,7 @@ RUN apt-get update \
          telnet \
          libsasl2-dev \
          libsasl2-modules-gssapi-mit \
+         openjdk-17-jdk-headless \
   && curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
   && curl https://packages.microsoft.com/config/debian/12/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
   && echo "deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list \
@@ -42,6 +43,9 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 pt_BR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
+
+COPY driver /opt/driver
+
 USER airflow
 
 WORKDIR /opt/airflow
@@ -69,6 +73,7 @@ RUN pip install --no-cache-dir -r \
     apache-airflow-providers-microsoft-mssql==4.0.0 \
     apache-airflow-providers-samba==4.9.0 \
     apache-airflow-providers-odbc==4.9.0 \
+    apache-airflow-providers-jdbc==5.1.0 \
     apache-airflow-providers-docker==4.0.0 \
     apache-airflow-providers-common-sql==1.21.0 \
     apache-airflow-providers-telegram==4.7.0 \
