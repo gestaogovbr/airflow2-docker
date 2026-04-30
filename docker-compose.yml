@@ -21,6 +21,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__WEBSERVER__INSTANCE_NAME: "Let's Code!"
     AIRFLOW__WEBSERVER__NAVBAR_COLOR: "#82f6ce"
     AIRFLOW__WEBSERVER__SECRET_KEY: "42"
+    AIRFLOW__PROVIDERS_JDBC__ALLOW_DRIVER_CLASS_IN_EXTRA: "true"
+    AIRFLOW__PROVIDERS_JDBC__ALLOW_DRIVER_PATH_IN_EXTRA: "true"
     PYTHONPATH: "/opt/airflow/dags/airflow-dags:/opt/airflow/dags/airflow-dags-detru:/opt/airflow/dags/airflow-dags-delog"
     RO_DOU__DAG_CONF_DIR: /opt/airflow/dags/airflow-dags/ro_dou/dag_confs
     FASTETL_DEV: "true"
@@ -97,3 +99,4 @@ services:
     command: bash -c "jupyter lab --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/opt/airflow/include/great_expectations"
     ports:
       - 8888:8888
+
