@@ -16,6 +16,7 @@ https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html.
 
 ## Índice
 
+- [Fluxo de deploy (CI/CD: tags, kube-deploys, Argo CD, aprovação)](docs/DEPLOY-FLOW.md)
 - [1. Preparação e execução do Airflow](#1-preparação-e-execução-do-airflow)
 - [2. Importando Plugins e DAGs](#2-importando-plugins-e-dags)
 - [3. Executando o Airflow](#3-executando-o-airflow)
