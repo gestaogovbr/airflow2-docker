@@ -101,12 +101,11 @@ jobs:
       - name: Trigger kube-deploys (update airflow prod custom-values)
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
-          VERSION: ${{ needs.build_rc_and_update_dev.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
           API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
-          BODY="{\"event_type\":\"update_airflow_prod\",\"client_payload\":{\"tag\":\"${VERSION}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+          BODY="{\"event_type\":\"update_airflow_prod\",\"client_payload\":{\"tag\":\"latest\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
           HTTP_CODE="$(curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
             -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
