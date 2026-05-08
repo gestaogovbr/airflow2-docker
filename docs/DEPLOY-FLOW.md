@@ -106,6 +106,51 @@ git push origin v2.11.0-minha-feature
 | Após job dev | `…:VERSION-rc.1` apenas |
 | Após aprovação + job prod | `…:VERSION` e `…:latest` (mesmo digest da RC) |
 
+## Recomendações e atenções
+
+Boas práticas para reduzir falhas e bloqueios no fluxo.
+
+### Git e tags
+
+- Antes de criar a tag: **`git pull origin main`** para garantir que o commit etiquetado é o código que a equipe espera no remoto.
+- Manter um **padrão estável** de nome (`v*.*.*`). Mudanças no glob do workflow exigem atualizar o YAML e esta documentação.
+- Evitar **reutilizar** o mesmo nome de tag no remoto (apagar e recriar) sem necessidade — confunde histórico e execuções no Actions.
+- Lembrete: só `git push origin <nome-da-tag>` dispara o pipeline; push da `main` **não** envia tags.
+
+### GitHub Actions (`airflow2-docker`)
+
+- **`PAT_KUBE_DEPLOYS`:** acompanhar **validade** do fine-grained PAT; renovar antes de expirar. Confirmar escopo no repo **`kube-deploys`** e permissões exigidas pela org (dispatch + commits lá).
+- **Environment `production`:** manter **Required reviewers** sempre definidos e lista de pessoas **atualizada**.
+- Se **Prevent self-review** estiver ativo, garantir **pelo menos um revisor diferente** de quem fez o push da tag — senão a aprovação pode ficar impossível.
+- Se o passo de **dispatch** devolver erro (HTTP ≠ 204 no log), **corrigir token/permissões** antes de insistir em produção.
+- No YAML dos workflows, em scripts `run: |` com **continuação de linha (`\`)**, **não** inserir linhas em branco entre as linhas do comando — o shell quebra e comandos como `curl` falham de forma confusa.
+
+### Dockerfile e imagem
+
+- O build deve continuar **falhando** se o módulo **`fastetl`** não puder ser importado após a instalação — evita imagem que quebra plugins em runtime.
+- Mudanças grandes em dependências: preferir validar antes em **dev** (tag + RC) antes de aprovar **prod**.
+
+### Repositório `kube-deploys`
+
+- **Não mover ou renomear** os arquivos `deploys/airflow-dev/helm/custom-values.yml` e `deploys/airflow/helm/custom-values.yml` sem ajustar o workflow **`update-airflow-custom-values.yml`** (paths do `yq`).
+- Edições manuais nos values: conferir se **`airflow.image.repository`** permanece **`ghcr.io/gestaogovbr/airflow2-docker`** (ou o valor oficial acordado).
+
+### Argo CD
+
+- Confirmar que cada **Application** aponta para a **branch** e o **path** corretos dentro do `kube-deploys`.
+- Se produção usar **sync manual**, definir **quem** executa o Sync após o commit automático do GitHub Actions.
+- Respeitar **sync windows** ou políticas da org: o pipeline pode estar correto e o cluster só atualizar na janela permitida.
+
+### Operação e checklist rápido
+
+1. Actions **verde** no `airflow2-docker` (job dev; depois aprovação e job prod).
+2. **Novo commit** no `kube-deploys` nos `custom-values.yml` esperados.
+3. No Argo CD: app **OutOfSync → Synced** (ou equivalente) e pods com **imagem/digest** esperados.
+
+### Documentação
+
+- Ao mudar gatilhos, paths Helm, comportamento de **`latest`** vs RC ou ambientes do GitHub, **atualizar este arquivo** (`DEPLOY-FLOW.md`) para o time não operar com informação desatualizada.
+
 ## Rollback (orientação)
 
 - **Dev:** voltar `deploys/airflow-dev/helm/custom-values.yml` para uma RC anterior ou novo dispatch/commit manual.
