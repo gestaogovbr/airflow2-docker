@@ -49,9 +49,23 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
         shell: bash
         run: |
-          curl -sS -X POST \
-            -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches \
-            -d "{\"event_type\":\"update_airflow_dev\",\"client_payload\":{\"tag\":\"${{ env.RC_TAG }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+          set -euo pipefail
+          API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
+          BODY="{\"event_type\":\"update_airflow_dev\",\"client_payload\":{\"tag\":\"${{ env.RC_TAG }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+
+          HTTP_CODE="$(
+            curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
+              -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "${API_URL}" \
+              -d "${BODY}"
+          )"
+
+          if [ "${HTTP_CODE}" != "204" ]; then
+            echo "repository_dispatch falhou (HTTP ${HTTP_CODE}). Resposta:"
+            cat /tmp/dispatch_response.json || true
+            exit 1
+          fi
+
+          echo "repository_dispatch OK (HTTP 204)."
 
