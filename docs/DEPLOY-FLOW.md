@@ -82,19 +82,35 @@ Ou seja: **GitHub Actions atualiza o Git**; **Argo CD aplica no Kubernetes**.
 
 ## Como disparar um deploy
 
-Na máquina local, **sempre alinhar com a `main` remota antes** de criar a tag:
+Ordem recomendada na sua máquina:
+
+1. **Commitar** as alterações que devem entrar na imagem.
+2. **Enviar a `main` para o GitHub:** `git push origin main` — assim o repositório remoto deixa de ficar **desatualizado** em relação ao que você vai etiquetar.
+3. **Alinhar com o remoto:** `git pull origin main` (incorpora commits de outras pessoas e confirma que sua `main` local = `origin/main`).
+4. **Só então** criar a tag no commit que você quer implantar e dar push da tag.
 
 ```bash
-git pull origin main
+git add … && git commit -m "…"    # se houver mudanças locais
+git push origin main               # não esquecer: senão a main no GitHub fica atrás
+git pull origin main               # sincroniza com a equipe
 git tag v2.11.0-minha-feature
 git push origin v2.11.0-minha-feature
 ```
 
+**Por que commit + push na `main` antes da tag**
+
+- Se você **esquecer de commitar** ou **esquecer de dar `push` na `main`** e mesmo assim criar e enviar só a **tag**, o GitHub pode ficar num estado incoerente: a **`main` remota desatualizada** (sem seu trabalho) enquanto a **tag** aponta para um commit **à frente** — código que existe na sua máquina (ou só na tag) mas não aparece como último commit da `main` no repositório.
+- O pipeline é disparado pelo **push da tag** e builda o commit que a tag referencia. Para o time e para o histórico, o ideal é esse commit ser **o mesmo** que está na ponta da **`main`** que todos veem no GitHub (depois do seu push da branch).
+
+**Não esqueça — `pull` da `main` remota antes de etiquetar**
+
+- Depois do **`git push origin main`**, rode **`git pull origin main`** antes de `git tag`, para não etiquetar um commit **antigo** por engano e para receber commits dos outros.
+- Se você pular o **pull**, a tag pode ficar “atrás” da `origin/main` ou você pode não estar no commit que acha.
+
 **Não esqueça — atualizar a `main` remota antes da tag**
 
-- **Obrigatório** rodar **`git pull origin main`** (ou equivalente: `git fetch origin` + merge/rebase da `origin/main`) **antes** de `git tag` e **antes** do `git push` da tag.
-- Se você pular esse passo, a tag pode apontar para um **commit antigo** da sua máquina; o workflow vai buildar e publicar uma imagem **diferente** do que está na `main` do GitHub — erro silencioso e difícil de perceber.
-- O fluxo espera que o deploy parta do estado atual acordado no remoto (`origin/main`).
+- **Obrigatório** integrar o estado certo na **`main` remota** (`push` das suas mudanças + **`git pull origin main`**) **antes** de `git tag` e do **`git push` da tag**.
+- O fluxo espera que o deploy reflita o que a equipe considera **integrado na `main`** no GitHub, não só uma tag isolada com código que nunca entrou na branch no remoto.
 
 **Importante — tag Git é separada do push da branch**
 
@@ -118,8 +134,8 @@ Boas práticas para reduzir falhas e bloqueios no fluxo.
 
 ### Git e tags
 
-- **Sempre** atualizar a branch local com a **`main` remota** (`git pull origin main`) **imediatamente antes** de criar a tag. Não envie tag sem ter certeza de que sua `main` local = `origin/main`.
-- Isso garante que o commit etiquetado é o mesmo código que a equipe vê no GitHub na `main`.
+- **Antes da tag:** conferir se há mudanças **commitadas** e se você já rodou **`git push origin main`**. Sem isso, a `main` no GitHub pode continuar antiga e a tag pode apontar para commits que **não** aparecem como evolução normal da branch — confusão para o time e risco de imagem “à frente” do que está na `main` remota.
+- Depois do push da `main`, **`git pull origin main`** e só então **`git tag`** — assim sua `main` local está alinhada com `origin/main` no momento de etiquetar.
 - Manter um **padrão estável** de nome (`v*.*.*`). Mudanças no glob do workflow exigem atualizar o YAML e esta documentação.
 - Evitar **reutilizar** o mesmo nome de tag no remoto (apagar e recriar) sem necessidade — confunde histórico e execuções no Actions.
 - Lembrete: só `git push origin <nome-da-tag>` dispara o pipeline; push da `main` **não** envia tags.
