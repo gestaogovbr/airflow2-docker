@@ -34,14 +34,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image (RC + latest-dev)
+      - name: Build and push image (RC)
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.RC_TAG }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
           build-args: |
             dev_build=true
 
