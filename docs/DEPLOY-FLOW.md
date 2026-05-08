@@ -90,6 +90,12 @@ git tag v2.11.0-minha-feature
 git push origin v2.11.0-minha-feature
 ```
 
+**Importante — tag Git é separada do push da branch**
+
+- Criar a tag **só na sua máquina** (`git tag …`) **não dispara** o workflow nem aparece no GitHub até você **enviar a tag ao remoto**.
+- `git push origin main` envia **commits** da branch `main`; **não envia tags**. Por isso é obrigatório o **`git push origin <nome-da-tag>`** (ou `git push origin --tags` se quiser enviar todas as tags locais de uma vez — use com cuidado).
+- O fluxo CI/CD deste repositório é disparado pelo evento **push da tag no remoto**, não pelo push da `main` sozinho.
+
 - Em seguida acompanhe **Actions** no `airflow2-docker`: primeiro job (dev), depois **Review deployments** / aprovação para o job de prod.
 - Valide **dev**; depois **aprove** para liberar prod (se sua política exigir outra pessoa, ela deve aprovar no GitHub).
 
