@@ -56,16 +56,11 @@ COPY requirements-cdata-dags.txt .
 RUN pip install --upgrade pip
 RUN pip uninstall -y -r requirements-uninstall.txt
 
-ARG dev_build="false"
-RUN \
-  if [[ "${dev_build}" == "false" ]] ; \
-  then pip install --no-cache-dir apache-airflow-providers-fastetl; \
-  else \
-  echo ***apache-airflow-providers-fastetl not installed***  && \
-  (curl -L --retry 5 --retry-delay 2 https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt -o /tmp/fastetl-requirements.txt && \
-   pip install --no-cache-dir -r /tmp/fastetl-requirements.txt) || \
-  echo "Aviso: Não foi possível baixar requirements do FastETL, continuando sem ele..." ; \
-  fi
+RUN set -euo pipefail; \
+  pip install --no-cache-dir apache-airflow-providers-fastetl || true; \
+  (curl -fsSL --retry 5 --retry-delay 2 https://raw.githubusercontent.com/gestaogovbr/FastETL/main/requirements.txt -o /tmp/fastetl-requirements.txt && \
+   pip install --no-cache-dir -r /tmp/fastetl-requirements.txt) || true; \
+  python -c "import fastetl" || (echo 'Erro: módulo fastetl não está instalado (plugins dependem dele).' && exit 1)
 
 RUN pip install --no-cache-dir -r \
     https://raw.githubusercontent.com/gestaogovbr/Ro-dou/main/requirements.txt && \

@@ -41,8 +41,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.RC_TAG }}
-          build-args: |
-            dev_build=true
 
       - name: Trigger kube-deploys (update airflow-dev/custom-values.yml)
         env:
