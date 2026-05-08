@@ -82,13 +82,19 @@ Ou seja: **GitHub Actions atualiza o Git**; **Argo CD aplica no Kubernetes**.
 
 ## Como disparar um deploy
 
-Na máquina local, com a `main` atualizada:
+Na máquina local, **sempre alinhar com a `main` remota antes** de criar a tag:
 
 ```bash
 git pull origin main
 git tag v2.11.0-minha-feature
 git push origin v2.11.0-minha-feature
 ```
+
+**Não esqueça — atualizar a `main` remota antes da tag**
+
+- **Obrigatório** rodar **`git pull origin main`** (ou equivalente: `git fetch origin` + merge/rebase da `origin/main`) **antes** de `git tag` e **antes** do `git push` da tag.
+- Se você pular esse passo, a tag pode apontar para um **commit antigo** da sua máquina; o workflow vai buildar e publicar uma imagem **diferente** do que está na `main` do GitHub — erro silencioso e difícil de perceber.
+- O fluxo espera que o deploy parta do estado atual acordado no remoto (`origin/main`).
 
 **Importante — tag Git é separada do push da branch**
 
@@ -112,7 +118,8 @@ Boas práticas para reduzir falhas e bloqueios no fluxo.
 
 ### Git e tags
 
-- Antes de criar a tag: **`git pull origin main`** para garantir que o commit etiquetado é o código que a equipe espera no remoto.
+- **Sempre** atualizar a branch local com a **`main` remota** (`git pull origin main`) **imediatamente antes** de criar a tag. Não envie tag sem ter certeza de que sua `main` local = `origin/main`.
+- Isso garante que o commit etiquetado é o mesmo código que a equipe vê no GitHub na `main`.
 - Manter um **padrão estável** de nome (`v*.*.*`). Mudanças no glob do workflow exigem atualizar o YAML e esta documentação.
 - Evitar **reutilizar** o mesmo nome de tag no remoto (apagar e recriar) sem necessidade — confunde histórico e execuções no Actions.
 - Lembrete: só `git push origin <nome-da-tag>` dispara o pipeline; push da `main` **não** envia tags.
