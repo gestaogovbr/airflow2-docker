@@ -1,133 +1,120 @@
-name: Build and publish (dev first)
-
-on:
-  push:
-    tags:
-      - "v*.*.*"
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
-jobs:
-  build_rc_and_update_dev:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    outputs:
-      version: ${{ steps.tags.outputs.version }}
-      rc_tag: ${{ steps.tags.outputs.rc_tag }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Compute tags
-        id: tags
-        shell: bash
-        run: |
-          VERSION="${GITHUB_REF_NAME}"      # vX.Y.Z
-          RC_TAG="${VERSION}-rc.1"
-          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
-          echo "RC_TAG=${RC_TAG}" >> "$GITHUB_ENV"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "rc_tag=${RC_TAG}" >> "$GITHUB_OUTPUT"
-
-      - name: Login GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push image (RC)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.RC_TAG }}
-
-      - name: Trigger kube-deploys (update airflow-dev/custom-values.yml)
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
-          BODY="{\"event_type\":\"update_airflow_dev\",\"client_payload\":{\"tag\":\"${{ env.RC_TAG }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
-
-          HTTP_CODE="$(
-            curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
-              -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "${API_URL}" \
-              -d "${BODY}"
-          )"
-
-          if [ "${HTTP_CODE}" != "204" ]; then
-            echo "repository_dispatch falhou (HTTP ${HTTP_CODE}). Resposta:"
-            cat /tmp/dispatch_response.json || true
-            exit 1
-          fi
-
-          echo "repository_dispatch OK (HTTP 204)."
-
-  # Espera aprovação no Environment "production" (Settings → Environments → Required reviewers).
-  # Só depois retaga RC → release + latest e atualiza kube-deploys (prod).
-  promote_to_prod:
-    needs: build_rc_and_update_dev
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Login GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Retag RC digest to release + latest (no rebuild)
-        shell: bash
-        env:
-          RC_TAG: ${{ needs.build_rc_and_update_dev.outputs.rc_tag }}
-          VERSION: ${{ needs.build_rc_and_update_dev.outputs.version }}
-        run: |
-          set -euo pipefail
-          SRC="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${RC_TAG}"
-          docker buildx imagetools create \
-            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}" \
-            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" \
-            "${SRC}"
-
-      - name: Trigger kube-deploys (update airflow prod custom-values)
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
-          VERSION: ${{ needs.build_rc_and_update_dev.outputs.version }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
-          BODY="{\"event_type\":\"update_airflow_prod\",\"client_payload\":{\"tag\":\"${VERSION}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
-
-          HTTP_CODE="$(
-            curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
-              -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "${API_URL}" \
-              -d "${BODY}"
-          )"
-
-          if [ "${HTTP_CODE}" != "204" ]; then
-            echo "repository_dispatch falhou (HTTP ${HTTP_CODE}). Resposta:"
-            cat /tmp/dispatch_response.json || true
-            exit 1
-          fi
-
-          echo "repository_dispatch OK (HTTP 204)."
-
+name: Build and publish (dev first)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build_rc_and_update_dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      version: ${{ steps.tags.outputs.version }}
+      rc_tag: ${{ steps.tags.outputs.rc_tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute tags
+        id: tags
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          RC_TAG="${VERSION}-rc.1"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "RC_TAG=${RC_TAG}" >> "$GITHUB_ENV"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "rc_tag=${RC_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image (RC)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.RC_TAG }}
+
+      - name: Trigger kube-deploys (update airflow-dev/custom-values.yml)
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
+          BODY="{\"event_type\":\"update_airflow_dev\",\"client_payload\":{\"tag\":\"${{ env.RC_TAG }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+          HTTP_CODE="$(curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
+            -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "${API_URL}" \
+            -d "${BODY}")"
+          if [ "${HTTP_CODE}" != "204" ]; then
+            echo "repository_dispatch falhou (HTTP ${HTTP_CODE}). Resposta:"
+            cat /tmp/dispatch_response.json || true
+            exit 1
+          fi
+          echo "repository_dispatch OK (HTTP 204)."
+
+  promote_to_prod:
+    needs: build_rc_and_update_dev
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Retag RC digest to release + latest (no rebuild)
+        shell: bash
+        env:
+          RC_TAG: ${{ needs.build_rc_and_update_dev.outputs.rc_tag }}
+          VERSION: ${{ needs.build_rc_and_update_dev.outputs.version }}
+        run: |
+          set -euo pipefail
+          SRC="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${RC_TAG}"
+          docker buildx imagetools create \
+            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}" \
+            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" \
+            "${SRC}"
+
+      - name: Trigger kube-deploys (update airflow prod custom-values)
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
+          VERSION: ${{ needs.build_rc_and_update_dev.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_URL="https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches"
+          BODY="{\"event_type\":\"update_airflow_prod\",\"client_payload\":{\"tag\":\"${VERSION}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+          HTTP_CODE="$(curl -sS -o /tmp/dispatch_response.json -w "%{http_code}" -X POST \
+            -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "${API_URL}" \
+            -d "${BODY}")"
+          if [ "${HTTP_CODE}" != "204" ]; then
+            echo "repository_dispatch falhou (HTTP ${HTTP_CODE}). Resposta:"
+            cat /tmp/dispatch_response.json || true
+            exit 1
+          fi
+          echo "repository_dispatch OK (HTTP 204)."
