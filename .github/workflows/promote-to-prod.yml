@@ -1,0 +1,52 @@
+name: Promote to prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release (ex: v2.9.3)"
+        required: true
+      rc_tag:
+        description: "RC testado (ex: v2.9.3-rc.1)"
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Retag RC digest to release + latest (no rebuild)
+        shell: bash
+        run: |
+          SRC="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.rc_tag }}"
+          docker buildx imagetools create \
+            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}" \
+            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" \
+            "${SRC}"
+
+      - name: Trigger kube-deploys (update airflow/custom-values.yml)
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
+        shell: bash
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches \
+            -d "{\"event_type\":\"update_airflow_prod\",\"client_payload\":{\"tag\":\"${{ inputs.version }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+

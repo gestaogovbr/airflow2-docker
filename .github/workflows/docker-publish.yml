@@ -5,6 +5,9 @@ on:
     # branches: [ github_actions_build_matrix ]
     tags:
       - '*'
+      # Evita duplicar builds/push quando usar tags de release (vX.Y.Z),
+      # pois isso é tratado pelos workflows novos (dev-first + promote).
+      - '!v*.*.*'
   repository_dispatch:
       types: [update-dependencies]
 

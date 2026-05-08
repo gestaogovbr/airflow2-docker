@@ -1,0 +1,58 @@
+name: Build and publish (dev first)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build_rc_and_update_dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute tags
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME}"      # vX.Y.Z
+          RC_TAG="${VERSION}-rc.1"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "RC_TAG=${RC_TAG}" >> "$GITHUB_ENV"
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image (RC + latest-dev)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.RC_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-dev
+          build-args: |
+            dev_build=true
+
+      - name: Trigger kube-deploys (update airflow-dev/custom-values.yml)
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT_KUBE_DEPLOYS }}
+        shell: bash
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/gestaogovbr/kube-deploys/dispatches \
+            -d "{\"event_type\":\"update_airflow_dev\",\"client_payload\":{\"tag\":\"${{ env.RC_TAG }}\",\"repository\":\"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"}}"
+
