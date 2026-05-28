@@ -40,7 +40,7 @@ tag vX.Y.Z no airflow2-docker
 |-------|-----------|
 | Environment | Usa **`environment: production`**. O workflow **pausa** até existir **aprovação** conforme as regras do ambiente no GitHub (revisores obrigatórios, opcionalmente *prevent self-review*). |
 | Retag | Usa `docker buildx imagetools create` para apontar as tags **`VERSION`** (sem `-rc.1`) e **`latest`** para o **mesmo digest** da imagem RC — **sem novo build**. |
-| Dispatch | Chama `repository_dispatch` com `event_type: update_airflow_prod` e **`tag: latest`** no payload (valores Helm de prod usam a tag mutável `latest`; o digest já foi fixado no GHCR no passo anterior). |
+| Dispatch | Chama `repository_dispatch` com `event_type: update_airflow_prod` e **`tag: VERSION`** no payload (tag imutável no Helm de prod, ex.: `v2.10.10-gx-compat`, para o Argo CD detectar diff e fazer rollout). A tag **`latest`** no GHCR continua sendo atualizada no retag, mas não é mais o valor gravado no `custom-values.yml`. |
 
 ### Segredo e permissões
 
@@ -66,7 +66,7 @@ Sem revisores configurados no ambiente `production`, o segundo job pode rodar **
 **Gatilho:** `repository_dispatch` com tipos:
 
 - **`update_airflow_dev`** — atualiza `deploys/airflow-dev/helm/custom-values.yml` (`airflow.image.repository` e `airflow.image.tag`). O **tag** enviado é o da RC (ex.: `…-rc.1`).
-- **`update_airflow_prod`** — atualiza `deploys/airflow/helm/custom-values.yml`. O **tag** enviado é **`latest`** (alinhado ao fluxo atual no `airflow2-docker`).
+- **`update_airflow_prod`** — atualiza `deploys/airflow/helm/custom-values.yml`. O **tag** enviado é **`VERSION`** (mesma tag Git da release, sem `-rc.1`).
 
 Após editar o YAML com `yq`, o workflow faz **commit e push** na branch padrão (geralmente `main`).
 
@@ -177,4 +177,4 @@ Boas práticas para reduzir falhas e bloqueios no fluxo.
 ## Rollback (orientação)
 
 - **Dev:** voltar `deploys/airflow-dev/helm/custom-values.yml` para uma RC anterior ou novo dispatch/commit manual.
-- **Prod:** ajustar tag/digest no `kube-deploys` ou usar uma tag de imagem imutável documentada pela equipe; com `latest` no Helm, o histórico no Git do `kube-deploys` ajuda a saber qual deploy foi aplicado.
+- **Prod:** o Helm usa tag **imutável** (`VERSION`); o histórico no Git do `kube-deploys` indica qual release está aplicada. Rollback: voltar `airflow.image.tag` no `custom-values.yml` para a release anterior.
