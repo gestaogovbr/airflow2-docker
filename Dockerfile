@@ -81,7 +81,8 @@ RUN pip install --no-cache-dir -r \
     thrift \
     thrift-sasl \
     sasl \
-    bit_array && \
+    bit_array \
+    polars && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 RUN rm ACcompactado.zip requirements-cdata-dags.txt requirements-uninstall.txt
