@@ -82,7 +82,8 @@ RUN pip install --no-cache-dir -r \
     thrift-sasl \
     sasl \
     bit_array \
-    polars && \
+    polars \
+    fastexcel && \
     pip install --no-cache-dir -r requirements-cdata-dags.txt
 
 RUN rm ACcompactado.zip requirements-cdata-dags.txt requirements-uninstall.txt
