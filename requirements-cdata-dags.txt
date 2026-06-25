@@ -17,6 +17,8 @@ unidecode==1.2.0
 # rodou-dags
 apprise==1.9.7
 openai==2.16.0
+opensearch-py>=3.1.0
+lxml>=6.0.2
 # airflow-commons
 # great-expectations==0.18.9
 
